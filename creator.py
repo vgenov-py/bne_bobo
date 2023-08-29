@@ -13,10 +13,6 @@ datasets = {
     "geo": "GEOGRAFICO", "per": "PERSONA", "mon": "MONOMODERN", "moa": "MONOANTIGU", "ent": "ENTIDAD"
 }
 
-datasets = {
-    "geo": "GEOGRAFICO","ent": "ENTIDAD"
-}
-
 urls = (
     "https://www.bne.es/redBNE/SuministroRegistros/Bibliograficos/MONOMODERN.zip",
     "https://www.bne.es/redBNE/SuministroRegistros/Autoridades/PERSONA.zip",
@@ -24,10 +20,6 @@ urls = (
     "https://www.bne.es/redBNE/SuministroRegistros/Autoridades/ENTIDAD.zip",
     "https://www.bne.es/redBNE/SuministroRegistros/Bibliograficos/MONOANTIGU.zip"
     )
-urls = (
-    "https://www.bne.es/redBNE/SuministroRegistros/Autoridades/ENTIDAD.zip",
-    "https://www.bne.es/redBNE/SuministroRegistros/Autoridades/GEOGRAFICO.zip"
-)
 
 with concurrent.futures.ThreadPoolExecutor() as executor:
     def a(url):
@@ -45,7 +37,7 @@ with concurrent.futures.ThreadPoolExecutor() as executor:
 print(time.perf_counter()-s)
 con = sqlite3.connect("bne.db")
 cur = con.cursor()
-
+cur.execute("CREATE VIRTUAL TABLE queries_fts USING FTS5 (id, query, length, date, dataset, time, is_from_web, error);")
 dataset = "geo"
 
 for dataset, mrc_file in datasets.items():

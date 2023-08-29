@@ -275,7 +275,7 @@ CREATE TABLE IF NOT EXISTS ent (
 '''
 
 query_create_queries = '''
-    CREATE VIRTUAL TABLE queries USING FTS5 (id, query, length, date, dataset, time, is_from_web, error);    
+    CREATE VIRTUAL TABLE queries_fts USING FTS5 (id, query, length, date, dataset, time, is_from_web, error);    
 '''
 
 query_create_geo_fts ='''
