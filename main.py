@@ -1,6 +1,9 @@
 from flask import Flask, render_template, request
 from flaskwebgui import FlaskUI
 from os import listdir
+'''
+pyinstaller -w -F --add-data "templates;templates" --add-data "static;static" your_file_name.py
+'''
 app = Flask(__name__)
 @app.route("/", methods=["GET", "POST"])
 def t_home():
