@@ -410,6 +410,77 @@ def extract_values(dataset:str ,record:dict) -> tuple:
         '''Fuentes de información:'''
         result.append(per_other_sources(record.get("670")))
 
+    elif dataset == "ser":
+        result.append(record.get("001")[2:] if record.get("001") else None)
+        result.append(record.get("001"))
+        result.append(record.get("008"))
+        result.append(record.get("017"))
+        result.append(record.get("022"))
+        result.append(record.get("024"))
+        result.append(record.get("041"))
+        result.append(record.get("080"))
+        result.append(record.get("100"))
+        result.append(record.get("222"))
+        result.append(record.get("245"))
+        result.append(record.get("246"))
+        result.append(record.get("260"))
+        result.append(record.get("264"))
+        result.append(record.get("300"))
+        result.append(record.get("310"))
+        result.append(record.get("362"))
+        result.append(record.get("440"))
+        result.append(record.get("490"))
+        result.append(record.get("500"))
+        result.append(record.get("504"))
+        result.append(record.get("505"))
+        result.append(record.get("546"))
+        result.append(record.get("561"))
+        result.append(record.get("563"))
+        result.append(record.get("586"))
+        result.append(record.get("594"))
+        result.append(record.get("600"))
+        result.append(record.get("610"))
+        result.append(record.get("611"))
+        result.append(record.get("630"))
+        result.append(record.get("650"))
+        result.append(record.get("651"))
+        result.append(record.get("653"))
+        result.append(record.get("655"))
+        result.append(record.get("700"))
+        result.append(record.get("740"))
+        humans = []
+        humans.append(country_of_publication(record.get("008")))
+        humans.append(main_language(record.get("008")))
+        humans.append(other_languages(record.get("041")))
+        humans.append(original_language(record.get("041")))
+        humans.append(publication_date(record.get("008")))
+        humans.append(decade(record.get("008")))
+        humans.append(century(record.get("008")))
+        humans.append(legal_deposit(record.get("017")))
+        humans.append(get_single_dollar(record.get("022"), "a"))
+        humans.append(isbn(record.get("024"))) # NIPO
+        humans.append(get_single_dollar(record.get("080"), "a"))
+        humans.append(mon_authors(record.get("100"), record.get("700")))
+        humans.append(ser_key_title(record.get("222")))
+        humans.append(mon_title(record.get("245")))
+        humans.append(get_single_dollar(record.get("245"), "c"))
+        humans.append(mon_other_titles(record.get("246"), record.get("740")))
+        humans.append(mon_publication_place(record.get("260"), record.get("264")))
+        humans.append(mon_publisher(record.get("260"), record.get("264")))
+        humans.append(get_single_dollar(record.get("300"), "a"))
+        humans.append(get_single_dollar(record.get("300"), "b"))
+        humans.append(get_single_dollar(record.get("300"), "c"))
+        humans.append(get_single_dollar(record.get("300"), "e"))
+        humans.append(get_single_dollar(record.get("310"), "a"))
+        humans.append(get_single_dollar(record.get("362"), "a"))
+        humans.append(mon_serie(record.get("440"), record.get("490")))
+        humans.append(get_single_dollar(record.get("505"), "a"))
+        humans.append(mon_notes(record))
+        humans.append(get_single_dollar(record.get("561"), "a"))
+        humans.append(mon_subject(record, ("600", "610", "611", "630", "650", "651", "653")))
+        humans.append(mon_subject(record, ("655")))
+
+        result += humans
     return result
 
 '''
@@ -658,6 +729,7 @@ def main_language(value:str) -> str:
         return value[38:41].strip()
 
 def other_languages(value:str) -> str:
+    '''041: b, d, f, j, k'''
     if not value:
         return
     r = []
@@ -1048,3 +1120,36 @@ def ent_relationship_note( value:str) -> str:
         d_bs += f"{d_b.strip()}, "
         value = value.replace(f"|b{d_b}", "")
     return f"{d_a} {d_bs[:-2]}"
+
+
+'''
+SER:
+'''
+
+@stripper
+def ser_key_title(value:str) -> str:
+    '''
+    222: ab
+    '''
+    if not value:
+        return
+    d_a = get_single_dollar(value, "a")
+    d_b = get_single_dollar(value, "b")
+    if d_a:
+        d_a = d_a + d_b if d_b else d_a
+        return d_a
+    else:
+        return d_b
+    
+if __name__ == "__main__":
+    import unittest
+    class Test_humanizer(unittest.TestCase):
+
+        def test_ser_key_title(self):
+            self.assertEqual(ser_key_title(""), None)
+            self.assertEqual(ser_key_title(None), None)
+            self.assertEqual(ser_key_title("|a XX|b DD"), "XX DD")
+            self.assertEqual(ser_key_title("|a XX"), "XX")
+            self.assertEqual(ser_key_title("|b XX"), "XX")
+
+    unittest.main()

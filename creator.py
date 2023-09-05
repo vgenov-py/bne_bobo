@@ -10,16 +10,18 @@ from os import system
 s = time.perf_counter()
 
 datasets = {
-    # "geo": "GEOGRAFICO", "per": "PERSONA", "mon": "MONOMODERN", "moa": "MONOANTIGU", "ent": "ENTIDAD"
-    "geo": "GEOGRAFICO","ent": "ENTIDAD"
+    "geo": "GEOGRAFICO", "per": "PERSONA", "mon": "MONOMODERN", "moa": "MONOANTIGU", "ent": "ENTIDAD", "ser": "SERIADA"
+    # "geo": "GEOGRAFICO","ent": "ENTIDAD", "ser": "SERIADA"
+    # "ser":"SERIADA"
 }
 
 urls = (
-    # "https://www.bne.es/redBNE/SuministroRegistros/Bibliograficos/MONOMODERN.zip",
-    # "https://www.bne.es/redBNE/SuministroRegistros/Autoridades/PERSONA.zip",
+    "https://www.bne.es/redBNE/SuministroRegistros/Bibliograficos/MONOMODERN.zip",
+    "https://www.bne.es/redBNE/SuministroRegistros/Autoridades/PERSONA.zip",
     "https://www.bne.es/redBNE/SuministroRegistros/Autoridades/GEOGRAFICO.zip",
     "https://www.bne.es/redBNE/SuministroRegistros/Autoridades/ENTIDAD.zip",
-    # "https://www.bne.es/redBNE/SuministroRegistros/Bibliograficos/MONOANTIGU.zip"
+    "https://www.bne.es/redBNE/SuministroRegistros/Bibliograficos/SERIADA.zip",
+    "https://www.bne.es/redBNE/SuministroRegistros/Bibliograficos/MONOANTIGU.zip"
     )
 
 with concurrent.futures.ThreadPoolExecutor() as executor:
