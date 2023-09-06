@@ -10,13 +10,15 @@ from os import system
 s = time.perf_counter()
 
 datasets = {
-    "geo": "GEOGRAFICO", "per": "PERSONA", "mon": "MONOMODERN", "moa": "MONOANTIGU", "ent": "ENTIDAD", "ser": "SERIADA"
-    # "geo": "GEOGRAFICO","ent": "ENTIDAD", "ser": "SERIADA"
+    "geo": "GEOGRAFICO", "per": "PERSONA", "mon": "MONOMODERN", "moa": "MONOANTIGU", "ent": "ENTIDAD", "ser": "SERIADA", "mss":"MANUSCRITO"
+    # "geo": "GEOGRAFICO"
     # "ser":"SERIADA"
+    # "mon":"MONOMODERN"
 }
 
 urls = (
     "https://www.bne.es/redBNE/SuministroRegistros/Bibliograficos/MONOMODERN.zip",
+    "https://www.bne.es/redBNE/SuministroRegistros/Bibliograficos/MANUSCRITO.zip",
     "https://www.bne.es/redBNE/SuministroRegistros/Autoridades/PERSONA.zip",
     "https://www.bne.es/redBNE/SuministroRegistros/Autoridades/GEOGRAFICO.zip",
     "https://www.bne.es/redBNE/SuministroRegistros/Autoridades/ENTIDAD.zip",
