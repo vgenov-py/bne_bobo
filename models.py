@@ -592,8 +592,8 @@ query_create_ser_fts ='''
         t_653,
         t_655,
         t_700,
-        t_    CREATE VIRTUAL TABLE IF NOT EXISTS ser_fts USING FTS5(
-s_de_publicacion,
+        t_740,
+        pais_de_publicacion,
         lengua_principal,
         otras_lenguas,
         lengua_original,
@@ -623,7 +623,6 @@ s_de_publicacion,
         procedencia,
         tema,
         genero_forma
-
     );
 '''
 
