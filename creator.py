@@ -10,10 +10,13 @@ from os import system
 s = time.perf_counter()
 
 datasets = {
-    "geo": "GEOGRAFICO", "per": "PERSONA", "mon": "MONOMODERN", "moa": "MONOANTIGU", "ent": "ENTIDAD", "ser": "SERIADA", "mss":"MANUSCRITO"
-    # "geo": "GEOGRAFICO"
-    # "ser":"SERIADA"
-    # "mon":"MONOMODERN"
+    "geo": "GEOGRAFICO",
+    "per": "PERSONA", 
+    "mon": "MONOMODERN", 
+    "moa": "MONOANTIGU", 
+    "ent": "ENTIDAD", 
+    "ser": "SERIADA", 
+    "mss": "MANUSCRITO"
 }
 
 urls = (
@@ -28,10 +31,11 @@ urls = (
 
 with concurrent.futures.ThreadPoolExecutor() as executor:
     def a(url):
-        print(url)
+        print(f"Accediendo a {url.split('/')[-1]}")
         res = req.get(url)
         z_file_name = re.findall("\w{1,}\.zip", res.url)[0]
         z_file = open(z_file_name, "wb")
+        print(f"Escribiendo {z_file_name}")
         z_file.write(res.content)
         z_file.close()
         z_file = zipfile.ZipFile(z_file_name, "r")
@@ -42,7 +46,7 @@ with concurrent.futures.ThreadPoolExecutor() as executor:
 print(time.perf_counter()-s)
 con = sqlite3.connect("bne.db")
 cur = con.cursor()
-cur.execute("CREATE VIRTUAL TABLE queries_fts USING FTS5 (id, query, length, date, dataset, time, is_from_web, error);")
+cur.execute("CREATE VIRTUAL TABLE IF NOT EXISTS queries_fts USING FTS5 (id, query, length, date, dataset, time, is_from_web, error);")
 dataset = "geo"
 
 for dataset, mrc_file in datasets.items():
@@ -54,7 +58,8 @@ for dataset, mrc_file in datasets.items():
         def insert(data):
             query = f"insert or ignore into {dataset}_fts values ({'?, '*len(available_fields(dataset))})"
             query = query.replace(", )", ")")
-            print(query.center(50 + len(query), "#"))
+            # print(query.center(50 + len(query), "#"))
+            print(f"Insertando datos en {dataset}")
             try:
                 cur.executemany(query,filter(lambda d:d,data))
             except ValueError:
