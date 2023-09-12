@@ -6,7 +6,7 @@ from models import create_statements
 import time
 from humanizer import *
 import concurrent.futures
-from os import system
+from os import system, listdir
 s = time.perf_counter()
 real_s = s
 datasets = {
@@ -43,118 +43,115 @@ with concurrent.futures.ThreadPoolExecutor() as executor:
         z_file.close()
     tuple(executor.map(a,urls))
 
+
+input(": ")
 print(time.perf_counter()-s)
-con = sqlite3.connect("bne.db", check_same_thread=False)
-cur = con.cursor()
-cur.execute("CREATE VIRTUAL TABLE IF NOT EXISTS queries_fts USING FTS5 (id, query, length, date, dataset, time, is_from_web, error);")
-cur.execute(create_statements[f"ent_fts"])
-cur.execute(create_statements[f"geo_fts"])
-cur.execute(create_statements[f"mss_fts"])
-cur.execute(create_statements[f"moa_fts"])
-cur.execute(create_statements[f"mon_fts"])
-cur.execute(create_statements[f"per_fts"])
-cur.execute(create_statements[f"ser_fts"])
-con.close()
-# for dataset, mrc_file in filter(lambda dt: dt[0] in ("ser", "mss"),datasets.items()):
-#     with open(f"{mrc_file}.mrc", "rb") as file:
-#         reader = MARCReader(file, force_utf8=True)
-#         cur.execute(create_statements[f"{dataset}_fts"])
-#         con.commit()
-#         mf = marc_fields(dataset)
-#         def insert(data):
-#             query = f"insert or ignore into {dataset}_fts values ({'?, '*len(available_fields(dataset))})"
-#             query = query.replace(", )", ")")
-#             # print(query.center(50 + len(query), "#"))
-#             print(f"Insertando datos en {dataset}")
-#             try:
-#                 cur.executemany(query,filter(lambda d:d,data))
-#             except ValueError:
-#                 print(data)
-#             con.commit()
-#         def mapper(record):
-#             if not record:
-#                 return
-#             to_extract = {}
-#             old_t = None
-#             fields = record.as_dict()["fields"]
-#             for f in fields:
-#                 t,v = tuple(f.items())[0]
-#                 try:
-#                     subfields = v.get("subfields")
-#                 except:
-#                     pass
-#                 if type(v) == dict and subfields:
-#                     v = ""
-#                     for sf in subfields:
-#                         t_sf, v_sf = tuple(sf.items())[0]
-#                         v += f"|{t_sf} {v_sf}"
-#                     to_extract[t] = f'{to_extract[t]} /**/ {v}' if old_t == t else v 
-#                 else:
-#                     to_extract[t] = f"{to_extract[t]} |a {v}" if old_t == t else f"|a {v}"
-#                 old_t = t
-#             return extract_values(dataset,to_extract)
-
-#         data = map(lambda a:mapper(a), reader)
-#         insert(data)
-
-
-with concurrent.futures.ThreadPoolExecutor() as executor:
-    def a(kv):
-        dataset, mrc_file = kv
-        con = sqlite3.connect(f"{dataset}.db", check_same_thread=False)
-        cur = con.cursor()
-        with open(f"{mrc_file}.mrc", "rb") as file:
-            reader = MARCReader(file, force_utf8=True)
-            cur.execute(create_statements[f"{dataset}_fts"])
-            con.commit()
-            # mf = marc_fields(dataset)
-            def insert(data):
-                # query = f"insert or ignore into {dataset}_fts values ({'?, '*len(available_fields(dataset))})"
-                counter = create_statements[f"{dataset}_fts"].count("\n") -3
-                query = f'''insert or ignore into {dataset}_fts values ({'?, '*counter})'''
-                query = query.replace(", )", ")")
-                print(f"Insertando datos en {dataset}...")
-                try:
-                    cur.executemany(query,filter(lambda d:d,data))
-                except ValueError:
-                    print(data)
-                con.commit()
-            def mapper(record):
-                if not record:
-                    return
-                to_extract = {}
-                old_t = None
-                fields = record.as_dict()["fields"]
-                for f in fields:
-                    t,v = tuple(f.items())[0]
-                    try:
-                        subfields = v.get("subfields")
-                    except:
-                        pass
-                    if type(v) == dict and subfields:
-                        v = ""
-                        for sf in subfields:
-                            t_sf, v_sf = tuple(sf.items())[0]
-                            v += f"|{t_sf} {v_sf}"
-                        to_extract[t] = f'{to_extract[t]} /**/ {v}' if old_t == t else v 
-                    else:
-                        to_extract[t] = f"{to_extract[t]} |a {v}" if old_t == t else f"|a {v}"
-                    old_t = t
-                return extract_values(dataset,to_extract)
-
-            data = map(lambda a:mapper(a), reader)
-            insert(data)
-        con.close()
-    tuple(executor.map(a, datasets.items()))
-
-# system("rm -r *.mrc && rm -r *.zip")
 con = sqlite3.connect("bne.db")
 cur = con.cursor()
-for dataset in datasets.keys():
-    cur.execute(f"ATTACH DATABASE '{dataset}.db' AS {dataset};")
-    cur.execute(f"INSERT INTO main.{dataset}_fts SELECT * FROM {dataset}.{dataset}_fts;")
-    con.commit()
-con.close()
+
+for dataset, mrc_file in datasets.items():
+    with open(f"{mrc_file}.mrc", "rb") as file:
+        reader = MARCReader(file, force_utf8=True)
+        cur.execute(create_statements[f"{dataset}_fts"])
+        con.commit()
+        mf = marc_fields(dataset)
+        def insert(data):
+            # query = f"insert or ignore into {dataset}_fts values ({'?, '*len(available_fields(dataset))})"
+            counter = create_statements[f"{dataset}_fts"].count("\n") -3
+            query = f'''insert or ignore into {dataset}_fts values ({'?, '*counter})'''
+            query = query.replace(", )", ")")
+            # print(query.center(50 + len(query), "#"))
+            print(f"Insertando datos en {dataset}...")
+            try:
+                cur.executemany(query,filter(lambda d:d,data))
+            except ValueError:
+                print(data)
+            con.commit()
+        def mapper(record):
+            if not record:
+                return
+            to_extract = {}
+            old_t = None
+            fields = record.as_dict()["fields"]
+            for f in fields:
+                t,v = tuple(f.items())[0]
+                try:
+                    subfields = v.get("subfields")
+                except:
+                    pass
+                if type(v) == dict and subfields:
+                    v = ""
+                    for sf in subfields:
+                        t_sf, v_sf = tuple(sf.items())[0]
+                        v += f"|{t_sf} {v_sf}"
+                    to_extract[t] = f'{to_extract[t]} /**/ {v}' if old_t == t else v 
+                else:
+                    to_extract[t] = f"{to_extract[t]} |a {v}" if old_t == t else f"|a {v}"
+                old_t = t
+            return extract_values(dataset,to_extract)
+
+        data = map(lambda a:mapper(a), reader)
+        insert(data)
+
+
+# with concurrent.futures.ThreadPoolExecutor() as executor:
+#     def a(kv):
+#         dataset, mrc_file = kv
+#         con = sqlite3.connect(f"{dataset}.db", check_same_thread=False)
+#         cur = con.cursor()
+#         with open(f"{mrc_file}.mrc", "rb") as file:
+#             reader = MARCReader(file, force_utf8=True)
+#             cur.execute(create_statements[f"{dataset}_fts"])
+#             con.commit()
+#             # mf = marc_fields(dataset)
+#             def insert(data):
+#                 # query = f"insert or ignore into {dataset}_fts values ({'?, '*len(available_fields(dataset))})"
+#                 counter = create_statements[f"{dataset}_fts"].count("\n") -3
+#                 query = f'''insert or ignore into {dataset}_fts values ({'?, '*counter})'''
+#                 query = query.replace(", )", ")")
+#                 print(f"Insertando datos en {dataset}...")
+#                 try:
+#                     cur.executemany(query,filter(lambda d:d,data))
+#                 except ValueError:
+#                     print(data)
+#                 con.commit()
+#             def mapper(record):
+#                 if not record:
+#                     return
+#                 to_extract = {}
+#                 old_t = None
+#                 fields = record.as_dict()["fields"]
+#                 for f in fields:
+#                     t,v = tuple(f.items())[0]
+#                     try:
+#                         subfields = v.get("subfields")
+#                     except:
+#                         pass
+#                     if type(v) == dict and subfields:
+#                         v = ""
+#                         for sf in subfields:
+#                             t_sf, v_sf = tuple(sf.items())[0]
+#                             v += f"|{t_sf} {v_sf}"
+#                         to_extract[t] = f'{to_extract[t]} /**/ {v}' if old_t == t else v 
+#                     else:
+#                         to_extract[t] = f"{to_extract[t]} |a {v}" if old_t == t else f"|a {v}"
+#                     old_t = t
+#                 return extract_values(dataset,to_extract)
+
+#             data = map(lambda a:mapper(a), reader)
+#             insert(data)
+#         con.close()
+#     tuple(executor.map(a, datasets.items()))
+
+# # system("rm -r *.mrc && rm -r *.zip")
+# con = sqlite3.connect("bne.db")
+# cur = con.cursor()
+# for dataset in datasets.keys():
+#     cur.execute(f"ATTACH DATABASE '{dataset}.db' AS {dataset};")
+#     cur.execute(f"INSERT INTO main.{dataset}_fts SELECT * FROM {dataset}.{dataset}_fts;")
+#     print(f"Inserting {dataset}.db into main db")
+#     con.commit()
+# con.close()
 # print(time.perf_counter() - s)
 print(time.perf_counter() - real_s)
 
