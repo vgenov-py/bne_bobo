@@ -33,24 +33,26 @@ with concurrent.futures.ThreadPoolExecutor() as executor:
     def a(url):
         print(f"Accediendo a {url.split('/')[-1]}")
         res = req.get(url)
-        z_file_name = re.findall("\w{1,}\.zip", res.url)[0]
+        z_file_name = "mrcs/" + re.findall("\w{1,}\.zip", res.url)[0]
         z_file = open(z_file_name, "wb")
         print(f"Escribiendo {z_file_name}")
         z_file.write(res.content)
         z_file.close()
         z_file = zipfile.ZipFile(z_file_name, "r")
-        z_file.extractall()
+        z_file.extractall("/mrcs")
         z_file.close()
-    tuple(executor.map(a,urls))
+    tuple(executor.map(a,(urls[-2],)))
 
 
 input(": ")
 print(time.perf_counter()-s)
-con = sqlite3.connect("bne.db")
+con = sqlite3.connect("test.db")
 cur = con.cursor()
 
 for dataset, mrc_file in datasets.items():
-    with open(f"{mrc_file}.mrc", "rb") as file:
+    if dataset != "ser":
+        continue
+    with open(f"mrcs/{mrc_file}.mrc", "rb") as file:
         reader = MARCReader(file, force_utf8=True)
         cur.execute(create_statements[f"{dataset}_fts"])
         con.commit()

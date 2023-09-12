@@ -23,7 +23,7 @@ python -m venv venv
 source venv/Scripts/activate
 ```
 * Verás sobre el path de la terminal **(venv)**
-6. Ejecutar **creator.py**
+6. Ejecutar **main.py**
 ```
-python converter.py
+python main.py
 ```
