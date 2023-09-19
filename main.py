@@ -20,10 +20,10 @@ datasets = {
 }
 
 urls = (
+    "https://www.bne.es/redBNE/SuministroRegistros/Autoridades/GEOGRAFICO.zip",
     "https://www.bne.es/redBNE/SuministroRegistros/Bibliograficos/MONOMODERN.zip",
     "https://www.bne.es/redBNE/SuministroRegistros/Bibliograficos/MANUSCRITO.zip",
     "https://www.bne.es/redBNE/SuministroRegistros/Autoridades/PERSONA.zip",
-    "https://www.bne.es/redBNE/SuministroRegistros/Autoridades/GEOGRAFICO.zip",
     "https://www.bne.es/redBNE/SuministroRegistros/Autoridades/ENTIDAD.zip",
     "https://www.bne.es/redBNE/SuministroRegistros/Bibliograficos/SERIADA.zip",
     "https://www.bne.es/redBNE/SuministroRegistros/Bibliograficos/MONOANTIGU.zip"
@@ -33,26 +33,23 @@ with concurrent.futures.ThreadPoolExecutor() as executor:
     def a(url):
         print(f"Accediendo a {url.split('/')[-1]}")
         res = req.get(url)
-        z_file_name = "mrcs/" + re.findall("\w{1,}\.zip", res.url)[0]
+        z_file_name = re.findall("\w{1,}\.zip", res.url)[0]
         z_file = open(z_file_name, "wb")
         print(f"Escribiendo {z_file_name}")
         z_file.write(res.content)
         z_file.close()
         z_file = zipfile.ZipFile(z_file_name, "r")
-        z_file.extractall("/mrcs")
+        z_file.extractall()
         z_file.close()
-    tuple(executor.map(a,(urls[-2],)))
+    tuple(executor.map(a,urls))
 
 
-input(": ")
 print(time.perf_counter()-s)
-con = sqlite3.connect("test.db")
+con = sqlite3.connect("bne.db")
 cur = con.cursor()
 
 for dataset, mrc_file in datasets.items():
-    if dataset != "ser":
-        continue
-    with open(f"mrcs/{mrc_file}.mrc", "rb") as file:
+    with open(f"{mrc_file}.mrc", "rb") as file:
         reader = MARCReader(file, force_utf8=True)
         cur.execute(create_statements[f"{dataset}_fts"])
         con.commit()
