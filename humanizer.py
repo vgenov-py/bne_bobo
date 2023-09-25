@@ -689,6 +689,8 @@ def gen_url(value: str) -> str:
 
 @stripper
 def f_lat_lng(v):
+    if not v:
+        return
     re_coord = "\w{2}\d{1,}"
     result = ""
     try:
@@ -698,7 +700,7 @@ def f_lat_lng(v):
                 coord = coord[1:]
                 c_point = coord[0]
                 digits = coord[1:]
-                n = float(f"{digits[0:3]}.{digits[3:]}")
+                n = float(f"{digits[0:2]}.{digits[2:]}")
                 if c_point == "W" or c_point == "E":
                     if c_point == "W":
                         n = -n
@@ -707,8 +709,8 @@ def f_lat_lng(v):
                     if c_point == "S":
                         n = -n
                     result += f", {n}"
-    
-
+        if result.startswith(", "):
+            return result[2:]
         return result
     except:
         return None
@@ -1281,6 +1283,11 @@ def ser_key_title(value:str) -> str:
 if __name__ == "__main__":
     import unittest
     class Test_humanizer(unittest.TestCase):
+
+        def test_lat_lng(self):
+            self.assertEqual(f_lat_lng("|d W0910335|e W0910335|f N0332432|g N0332432|2 geonames"), "91.0335, 33.2432")
+            self.assertEqual(f_lat_lng("|d W0051240|e W0051240|f N0373555|g N0373555|2 ngn"), "5.124, 37.3555")
+            self.assertEqual(f_lat_lng("|d E0020143|e E0020143|f N0412156|g N0412156|2 geonames"), "2.0143, 41.2156")
 
         def test_mon_per_id(self):
             self.assertEqual(mon_per_id("|0 XX45333"), "XX45333")
