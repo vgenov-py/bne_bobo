@@ -154,7 +154,8 @@ query_create_mon = f'''
     premios TEXT,
     tema TEXT,
     genero_forma TEXT,
-    tipo_de_documento TEXT
+    tipo_de_documento TEXT,
+    FOREIGN KEY (per_id) REFERENCES per (id)
     );
 '''
 
