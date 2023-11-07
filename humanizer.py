@@ -178,7 +178,7 @@ def extract_values(dataset:str ,record:dict) -> tuple:
         #lengua
         result.append(get_single_dollar(record.get("377"), "l"))
         #otros nombres
-        result.append(per_person_name(record.get("400")))
+        result.append(per_other_names(record.get("400")))
         #persona relacionada
         result.append(per_person_name(record.get("500")))
         #nota general
@@ -770,6 +770,17 @@ def per_person_name(value: str) -> str:
     return result
 
 @stripper
+def per_other_names(value:str) -> str:
+    if not value:
+        return
+    if value.find(splitter):
+        result = ""
+        for v in value.split(splitter):
+            result += f"{per_person_name(v)}{splitter}" 
+        return result[:-5]
+    return per_person_name(value)
+
+@stripper
 def per_other_attributes(value:str) -> str:
     if not value:
         return
@@ -1331,5 +1342,7 @@ if __name__ == "__main__":
             '''|a 070418d18691869sp uu pe      0   b0spa  '''
             self.assertEqual(country_of_publication("|a 900725u196u    sp ar        s0   b0spa  "), "España")
             self.assertEqual(country_of_publication("|a 070418d18691869sp uu pe      0   b0spa  "), "España")
+        def test_per_other_names(self):
+            self.assertEqual(per_other_names("|a Abad Gallego, Juan Carlos|d 1960- /**/ |a Abad Gallego, Xoán C.|d 1960-"), "Abad Gallego, Juan Carlos, ( 1960-) /**/ Abad Gallego, Xoán C., ( 1960-)")
 
     unittest.main()

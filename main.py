@@ -41,7 +41,7 @@ with concurrent.futures.ThreadPoolExecutor() as executor:
         z_file = zipfile.ZipFile(z_file_name, "r")
         z_file.extractall()
         z_file.close()
-    tuple(executor.map(a,urls))
+    # tuple(executor.map(a,urls))
 
 
 print(time.perf_counter()-s)
@@ -49,8 +49,8 @@ con = sqlite3.connect("bne.db")
 cur = con.cursor()
 
 for dataset, mrc_file in datasets.items():
-    # if dataset not in ("mss", "ser"):
-    #     continue
+    if dataset not in ("per"):
+        continue
     with open(f"{mrc_file}.mrc", "rb") as file:
         reader = MARCReader(file, force_utf8=True)
         cur.execute(create_statements[f"{dataset}"])
