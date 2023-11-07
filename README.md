@@ -23,7 +23,13 @@ python -m venv venv
 source venv/Scripts/activate
 ```
 * Verás sobre el path de la terminal **(venv)**
-6. Ejecutar **main.py**
+
+6. Instalar dependencias 
+```
+pip install -r requirements.txt
+```
+
+7. Ejecutar **main.py**
 ```
 python main.py
 ```
