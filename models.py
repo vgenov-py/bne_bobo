@@ -82,6 +82,8 @@ query_create_mon = f'''
     t_080 TEXT,
     t_100 TEXT,
     t_110 TEXT,
+    t_240 TEXT,
+    t_243 TEXT,
     t_245 TEXT,
     t_246 TEXT,
     t_250 TEXT,
@@ -169,6 +171,8 @@ query_create_moa = f'''
     t_080 TEXT,
     t_100 TEXT,
     t_110 TEXT,
+    t_240 TEXT,
+    t_243 TEXT,
     t_245 TEXT,
     t_246 TEXT,
     t_250 TEXT,
@@ -276,11 +280,11 @@ CREATE TABLE IF NOT EXISTS ent (
 '''
 
 query_create_queries = '''
-    CREATE VIRTUAL TABLE queries_fts USING FTS5 (id, query, length, date, dataset, time, is_from_web, error);    
+    CREATE VIRTUAL TABLE queries USING FTS5 (id, query, length, date, dataset, time, is_from_web, error);    
 '''
 
-query_create_geo_fts ='''
-    CREATE VIRTUAL TABLE IF NOT EXISTS geo_fts USING FTS5(
+query_create_geo ='''
+    CREATE VIRTUAL TABLE IF NOT EXISTS geo USING FTS5(
         id,
         t_001,
         t_024,
@@ -309,8 +313,8 @@ query_create_geo_fts ='''
     );
 '''
 
-query_create_per_fts ='''
-    CREATE VIRTUAL TABLE IF NOT EXISTS per_fts USING FTS5(
+query_create_per ='''
+    CREATE VIRTUAL TABLE IF NOT EXISTS per USING FTS5(
     id,
     t_001,
     t_024,
@@ -349,8 +353,8 @@ query_create_per_fts ='''
     );
 '''
 
-query_create_mon_fts ='''
-CREATE VIRTUAL TABLE IF NOT EXISTS mon_fts USING FTS5(
+query_create_mon ='''
+CREATE VIRTUAL TABLE IF NOT EXISTS mon USING FTS5(
     id,
     t_001,
     t_005,
@@ -363,6 +367,8 @@ CREATE VIRTUAL TABLE IF NOT EXISTS mon_fts USING FTS5(
     t_080,
     t_100,
     t_110,
+    t_240,
+    t_243,
     t_245,
     t_246,
     t_250,
@@ -439,8 +445,8 @@ CREATE VIRTUAL TABLE IF NOT EXISTS mon_fts USING FTS5(
     );
 '''
 
-query_create_moa_fts = f'''
-    CREATE VIRTUAL TABLE IF NOT EXISTS moa_fts USING FTS5(
+query_create_moa = f'''
+    CREATE VIRTUAL TABLE IF NOT EXISTS moa USING FTS5(
     id,
     t_001,
     t_005,
@@ -449,6 +455,8 @@ query_create_moa_fts = f'''
     t_080,
     t_100,
     t_110,
+    t_240,
+    t_243,
     t_245,
     t_246,
     t_250,
@@ -517,8 +525,8 @@ query_create_moa_fts = f'''
     );
 '''
 
-query_create_ent_fts ='''
-CREATE VIRTUAL TABLE IF NOT EXISTS ent_fts USING FTS5(
+query_create_ent ='''
+CREATE VIRTUAL TABLE IF NOT EXISTS ent USING FTS5(
             id,
             t_001,
             t_024,
@@ -555,8 +563,8 @@ CREATE VIRTUAL TABLE IF NOT EXISTS ent_fts USING FTS5(
             );
 '''
 
-query_create_ser_fts ='''
-    CREATE VIRTUAL TABLE IF NOT EXISTS ser_fts USING FTS5(
+query_create_ser ='''
+    CREATE VIRTUAL TABLE IF NOT EXISTS ser USING FTS5(
         id,
         t_001,
         t_008,
@@ -627,8 +635,8 @@ query_create_ser_fts ='''
     );
 '''
 
-query_create_mss_fts = '''
-    CREATE VIRTUAL TABLE IF NOT EXISTS mss_fts USING FTS5(
+query_create_mss = '''
+    CREATE VIRTUAL TABLE IF NOT EXISTS mss USING FTS5(
         id,
         t_001,
         t_008,
@@ -697,12 +705,12 @@ create_statements = {
     "geo": query_create_geo, 
     "mon": query_create_mon, 
     "moa": query_create_moa, 
-    "ent": query_create_ent,
-    "per_fts": query_create_per_fts, 
-    "geo_fts": query_create_geo_fts, 
-    "mon_fts": query_create_mon_fts, 
-    "moa_fts": query_create_moa_fts, 
-    "ent_fts": query_create_ent_fts,
-    "ser_fts":query_create_ser_fts,
-    "mss_fts": query_create_mss_fts
+    "ent": query_create_ent
+    # "per_fts": query_create_per_fts, 
+    # "geo_fts": query_create_geo_fts, 
+    # "mon_fts": query_create_mon_fts, 
+    # "moa_fts": query_create_moa_fts, 
+    # "ent_fts": query_create_ent_fts,
+    # "ser_fts":query_create_ser_fts,
+    # "mss_fts": query_create_mss_fts
     }

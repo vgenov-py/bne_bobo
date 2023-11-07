@@ -5,72 +5,72 @@ from uuid import uuid4
 con = sqlite3.connect("bne.db")
 cur = con.cursor()
 
-def available_fields(dataset) -> list:
-    fields = {"geo": [
-        "id",
-        "t_001",
-        "t_024",
-        "t_034",
-        "t_080",
-        "t_151",
-        "t_451",
-        "t_510",
-        "t_550",
-        "t_551",
-        "t_667",
-        "t_670",
-        "t_781",
-        "otros_identificadores",
-        "coordenadas_lat_lng",
-        "CDU",
-        "nombre_de_lugar",
-        "otros_nombres_de_lugar",
-        "entidad_relacionada",
-        "materia_relacionada",
-        "lugar_relacionado",
-        "nota_general",
-        "fuentes_de_informacion",
-        "lugar_jerarquico",
-        "obras_relacionadas_en_el_catalogo_BNE"
-    ],
-    "ent": [
-        "id",
-            "t_001",
-            "t_024",
-            "t_046",
-            "t_110",
-            "t_368",
-            "t_370",
-            "t_372",
-            "t_377",
-            "t_410",
-            "t_500",
-            "t_510",
-            "t_663",
-            "t_665",
-            "t_667",
-            "t_670",
-            "t_678",
-            "otros_identificadores",
-            "fecha_establecimiento",
-            "fecha_finalizacion",
-            "nombre_de_entidad",
-            "tipo_entidad",
-            "pais",
-            "sede",
-            "campo_actividad",
-            "lengua",
-            "otros_nombres",
-            "persona_relacionada",
-            "grupo_o_entidad_relacionada",
-            "nota_de_relacion",
-            "otros_datos_historicos",
-            "nota_general",
-            "fuentes_de_informacion"
-    ]
-    }
-    return fields[dataset]
-    return [row[1] for row in cur.execute(f"pragma table_info({dataset}_fts);")]
+# def available_fields(dataset) -> list:
+#     fields = {"geo": [
+#         "id",
+#         "t_001",
+#         "t_024",
+#         "t_034",
+#         "t_080",
+#         "t_151",
+#         "t_451",
+#         "t_510",
+#         "t_550",
+#         "t_551",
+#         "t_667",
+#         "t_670",
+#         "t_781",
+#         "otros_identificadores",
+#         "coordenadas_lat_lng",
+#         "CDU",
+#         "nombre_de_lugar",
+#         "otros_nombres_de_lugar",
+#         "entidad_relacionada",
+#         "materia_relacionada",
+#         "lugar_relacionado",
+#         "nota_general",
+#         "fuentes_de_informacion",
+#         "lugar_jerarquico",
+#         "obras_relacionadas_en_el_catalogo_BNE"
+#     ],
+#     "ent": [
+#         "id",
+#             "t_001",
+#             "t_024",
+#             "t_046",
+#             "t_110",
+#             "t_368",
+#             "t_370",
+#             "t_372",
+#             "t_377",
+#             "t_410",
+#             "t_500",
+#             "t_510",
+#             "t_663",
+#             "t_665",
+#             "t_667",
+#             "t_670",
+#             "t_678",
+#             "otros_identificadores",
+#             "fecha_establecimiento",
+#             "fecha_finalizacion",
+#             "nombre_de_entidad",
+#             "tipo_entidad",
+#             "pais",
+#             "sede",
+#             "campo_actividad",
+#             "lengua",
+#             "otros_nombres",
+#             "persona_relacionada",
+#             "grupo_o_entidad_relacionada",
+#             "nota_de_relacion",
+#             "otros_datos_historicos",
+#             "nota_general",
+#             "fuentes_de_informacion"
+#     ]
+#     }
+#     return fields[dataset]
+#     return [row[1] for row in cur.execute(f"pragma table_info({dataset}_fts);")]
 
 def marc_fields(dataset) -> list:
     return tuple(map(lambda f:f[2:] if f.startswith("t_") else None,[row[1] for row in cur.execute(f"pragma table_info({dataset}_fts);")]))
@@ -78,7 +78,7 @@ def marc_fields(dataset) -> list:
 
 def stripper(f):
     def inner(*args):
-        result:str = f(*args)
+        result = f(*args)
         if result:
             return result.strip()
         return result
@@ -203,6 +203,8 @@ def extract_values(dataset:str ,record:dict) -> tuple:
         result.append(record.get("080"))
         result.append(record.get("100"))
         result.append(record.get("110"))
+        result.append(record.get("240"))
+        result.append(record.get("243"))
         result.append(record.get("245"))
         result.append(record.get("246"))
         result.append(record.get("250"))
@@ -317,6 +319,8 @@ def extract_values(dataset:str ,record:dict) -> tuple:
         result.append(record.get("080"))
         result.append(record.get("100"))
         result.append(record.get("110"))
+        result.append(record.get("240"))
+        result.append(record.get("243"))
         result.append(record.get("245"))
         result.append(record.get("246"))
         result.append(record.get("250"))
@@ -623,6 +627,7 @@ def extract_values(dataset:str ,record:dict) -> tuple:
 GEO:
 '''
 
+# @stripper
 def get_single_dollar(value:str, dollar: str) -> str:
         if not value:
             return None
@@ -850,6 +855,7 @@ def mon_per_id(value:str) -> str:
     if result:
         return result
 
+@stripper
 def country_of_publication(value:str) -> str:
     '''008: 18:21'''
     if not value:
@@ -859,6 +865,7 @@ def country_of_publication(value:str) -> str:
     except:
         return value[18:21].strip()
 
+@stripper
 def main_language(value:str) -> str:
     if not value:
         return
@@ -867,6 +874,7 @@ def main_language(value:str) -> str:
     except:
         return value[38:41].strip()
 
+@stripper
 def other_languages(value:str) -> str:
     '''041: b, d, f, j, k'''
     if not value:
@@ -888,6 +896,7 @@ def other_languages(value:str) -> str:
             result += f"{v}, "
     return result[0:-2]
 
+@stripper
 def original_language(value:str) -> str:
     if not value:
         return
@@ -896,6 +905,7 @@ def original_language(value:str) -> str:
         lang = languages.get(lang.strip())
         return lang
 
+@stripper
 def publication_date(value:str) -> str:
     if not value:
         return
@@ -906,6 +916,7 @@ def publication_date(value:str) -> str:
         return
     return value[10:14]
 
+@stripper
 def decade(value:str) -> str:
     if not value:
         return
@@ -921,6 +932,7 @@ def decade(value:str) -> str:
     except IndexError:
         return
 
+@stripper
 def century(value:str) -> str:
     if not value:
         return
@@ -937,6 +949,7 @@ def century(value:str) -> str:
     except:
         return f"{value} CENTURY"
 
+@stripper
 def legal_deposit(value:str) -> str:
     if not value:
         return
@@ -948,6 +961,7 @@ def legal_deposit(value:str) -> str:
         catched = get_single_dollar(value,"a")
     return r[:-6]
 
+@stripper
 def isbn(value:str) -> str:
     '''
     This would be used for NIPO too
@@ -964,6 +978,7 @@ def isbn(value:str) -> str:
         r+= f"{d_a} {splitter}"
     return r[:-7]
 
+@stripper
 def mon_authors(value_100:str, value_700:str) -> str:
     if not value_100:
         return
@@ -981,6 +996,7 @@ def mon_authors(value_100:str, value_700:str) -> str:
         return f"{value_100} /**/ {value_700}"
     return value_100
 
+@stripper
 def mon_title(value:str) -> str:
     '''245: Mención de autores |a:|b.|n,|p'''
     if not value:
@@ -999,6 +1015,7 @@ def mon_title(value:str) -> str:
         r+=f"{d_p}"
     return r.strip()
 
+@stripper
 def mon_other_titles(value_246:str, value_740:str) -> str:
     '''
     246: otros títulos [|i]:|a:|b.|n,|p
@@ -1027,13 +1044,17 @@ def mon_other_titles(value_246:str, value_740:str) -> str:
     d_a = get_single_dollar(value_740, "a")
     d_n = get_single_dollar(value_740, "n")
     d_p = get_single_dollar(value_740, "p")
-    r += d_a
+    try:
+        r += d_a
+    except TypeError:
+        pass
     if d_n:
         r += f". {d_n}. "
     if d_p:
         r += f"{d_p}"
     return r
 
+@stripper
 def mon_edition(value:str) -> str:
     "250 edición |a, |b"
     if not value:
@@ -1045,6 +1066,7 @@ def mon_edition(value:str) -> str:
         r += f", {d_b}"
     return r
 
+@stripper
 def mon_publication_place(value_260:str, value_264:str) -> str:
     "260: |a 264: |a lugar de publicación\nsolo uno"
     if not value_260 and not value_264:
@@ -1053,6 +1075,7 @@ def mon_publication_place(value_260:str, value_264:str) -> str:
         return get_single_dollar(value_260, "a")
     return get_single_dollar(value_264, "a")
 
+@stripper
 def mon_publisher(value_260:str, value_264:str) -> str:
     "260: |b 264: |b lugar de publicación\nsolo uno"
     if not value_260 and not value_264:
@@ -1061,6 +1084,7 @@ def mon_publisher(value_260:str, value_264:str) -> str:
         return get_single_dollar(value_260, "b")
     return get_single_dollar(value_264, "b")
 
+@stripper
 def mon_serie(value_440:str, value_490:str) -> str:
     "440: |a|v splitter 490 |a|v"
     if not value_440 and not value_490:
@@ -1082,6 +1106,7 @@ def mon_serie(value_440:str, value_490:str) -> str:
         r+= d_v
     return r
 
+@stripper
 def mon_notes(record:dict) -> str:
     '''"500","594","504","563","546":|a'''
     dollars = ("500","594","504","563","546")
@@ -1093,6 +1118,7 @@ def mon_notes(record:dict) -> str:
     if r:
         return r[:-6]    
 
+@stripper
 def mon_subject(record:dict, dollars:tuple) -> str:
     '''
     600
@@ -1116,6 +1142,7 @@ def mon_subject(record:dict, dollars:tuple) -> str:
     if r:
         return r[:-3]
 
+@stripper
 def mon_document_type(value:str) -> str:
     '''994:a\nsi |aMONOMODER: "Monografía en papel (posterior a 1830)"\nsi |aMONOMODER-RECELE: "Monografía electrónica"'''
     if not value:
@@ -1197,6 +1224,7 @@ def moa_url( value:str) -> str:
 ENT:
 '''
 
+@stripper
 def ent_other_identifiers( value:str) -> str:
     '''024 -> |2: |a'''
     if not value:

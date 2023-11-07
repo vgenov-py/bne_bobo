@@ -41,7 +41,7 @@ with concurrent.futures.ThreadPoolExecutor() as executor:
         z_file = zipfile.ZipFile(z_file_name, "r")
         z_file.extractall()
         z_file.close()
-    tuple(executor.map(a,urls))
+    # tuple(executor.map(a,urls))
 
 
 print(time.perf_counter()-s)
@@ -49,14 +49,16 @@ con = sqlite3.connect("bne.db")
 cur = con.cursor()
 
 for dataset, mrc_file in datasets.items():
+    if dataset not in ("mon"):
+        continue
     with open(f"{mrc_file}.mrc", "rb") as file:
         reader = MARCReader(file, force_utf8=True)
-        cur.execute(create_statements[f"{dataset}_fts"])
+        cur.execute(create_statements[f"{dataset}"])
         con.commit()
         mf = marc_fields(dataset)
         def insert(data):
-            counter = create_statements[f"{dataset}_fts"].count("\n") -3
-            query = f'''insert or ignore into {dataset}_fts values ({'?, '*counter})'''
+            counter = create_statements[f"{dataset}"].count("\n") -3
+            query = f'''insert or ignore into {dataset} values ({'?, '*counter})'''
             query = query.replace(", )", ")")
             print(f"Insertando datos en {dataset}...")
             try:
