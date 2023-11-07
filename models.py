@@ -705,12 +705,12 @@ create_statements = {
     "geo": query_create_geo, 
     "mon": query_create_mon, 
     "moa": query_create_moa, 
-    "ent": query_create_ent
+    "ent": query_create_ent,
+    "ser":query_create_ser,
+    "mss": query_create_mss
     # "per_fts": query_create_per_fts, 
     # "geo_fts": query_create_geo_fts, 
     # "mon_fts": query_create_mon_fts, 
     # "moa_fts": query_create_moa_fts, 
     # "ent_fts": query_create_ent_fts,
-    # "ser_fts":query_create_ser_fts,
-    # "mss_fts": query_create_mss_fts
     }
