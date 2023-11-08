@@ -10,7 +10,7 @@
 ```
 git clone https://github.com/vgenov-py/bne_converter
 ```
-3. Moverse al nuevo directorio **bne_converter**
+3. Cambiar directorio **bne_converter**
 ```
 cd bne_converter
 ```
@@ -20,7 +20,7 @@ python -m venv venv
 ```
 5. Activar entorno virtual
 ```
-source venv/Scripts/activate
+venv/Scripts/activate
 ```
 * Verás sobre el path de la terminal **(venv)**
 
@@ -33,3 +33,7 @@ pip install -r requirements.txt
 ```
 python main.py
 ```
+
+### Consideraciones
+
+1. Para descargar los conjuntos activar la siguiente línea en **main** --> **tuple(executor.map(a,urls))**

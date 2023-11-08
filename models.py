@@ -280,7 +280,7 @@ CREATE TABLE IF NOT EXISTS ent (
 '''
 
 query_create_queries = '''
-    CREATE VIRTUAL TABLE queries USING FTS5 (id, query, length, date, dataset, time, is_from_web, error);    
+    CREATE VIRTUAL TABLE IF NOT EXISTS queries USING FTS5 (id, query, length, date, dataset, time, is_from_web, error);    
 '''
 
 query_create_geo ='''
@@ -707,7 +707,8 @@ create_statements = {
     "moa": query_create_moa, 
     "ent": query_create_ent,
     "ser":query_create_ser,
-    "mss": query_create_mss
+    "mss": query_create_mss,
+    "queries": query_create_queries
     # "per_fts": query_create_per_fts, 
     # "geo_fts": query_create_geo_fts, 
     # "mon_fts": query_create_mon_fts, 

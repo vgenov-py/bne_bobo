@@ -5,77 +5,9 @@ from uuid import uuid4
 con = sqlite3.connect("bne.db")
 cur = con.cursor()
 
-# def available_fields(dataset) -> list:
-#     fields = {"geo": [
-#         "id",
-#         "t_001",
-#         "t_024",
-#         "t_034",
-#         "t_080",
-#         "t_151",
-#         "t_451",
-#         "t_510",
-#         "t_550",
-#         "t_551",
-#         "t_667",
-#         "t_670",
-#         "t_781",
-#         "otros_identificadores",
-#         "coordenadas_lat_lng",
-#         "CDU",
-#         "nombre_de_lugar",
-#         "otros_nombres_de_lugar",
-#         "entidad_relacionada",
-#         "materia_relacionada",
-#         "lugar_relacionado",
-#         "nota_general",
-#         "fuentes_de_informacion",
-#         "lugar_jerarquico",
-#         "obras_relacionadas_en_el_catalogo_BNE"
-#     ],
-#     "ent": [
-#         "id",
-#             "t_001",
-#             "t_024",
-#             "t_046",
-#             "t_110",
-#             "t_368",
-#             "t_370",
-#             "t_372",
-#             "t_377",
-#             "t_410",
-#             "t_500",
-#             "t_510",
-#             "t_663",
-#             "t_665",
-#             "t_667",
-#             "t_670",
-#             "t_678",
-#             "otros_identificadores",
-#             "fecha_establecimiento",
-#             "fecha_finalizacion",
-#             "nombre_de_entidad",
-#             "tipo_entidad",
-#             "pais",
-#             "sede",
-#             "campo_actividad",
-#             "lengua",
-#             "otros_nombres",
-#             "persona_relacionada",
-#             "grupo_o_entidad_relacionada",
-#             "nota_de_relacion",
-#             "otros_datos_historicos",
-#             "nota_general",
-#             "fuentes_de_informacion"
-#     ]
-#     }
-#     return fields[dataset]
-#     return [row[1] for row in cur.execute(f"pragma table_info({dataset}_fts);")]
-
 def marc_fields(dataset) -> list:
     return tuple(map(lambda f:f[2:] if f.startswith("t_") else None,[row[1] for row in cur.execute(f"pragma table_info({dataset}_fts);")]))
     
-
 def stripper(f):
     def inner(*args):
         result = f(*args)
@@ -627,7 +559,6 @@ def extract_values(dataset:str ,record:dict) -> tuple:
 GEO:
 '''
 
-# @stripper
 def get_single_dollar(value:str, dollar: str) -> str:
         if not value:
             return None

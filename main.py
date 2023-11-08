@@ -46,11 +46,12 @@ with concurrent.futures.ThreadPoolExecutor() as executor:
 
 print(time.perf_counter()-s)
 con = sqlite3.connect("bne.db")
+cur.execute(create_statements["queries"])
 cur = con.cursor()
 
 for dataset, mrc_file in datasets.items():
-    if dataset not in ("per"):
-        continue
+    # if dataset not in ("geo"):
+    #     continue
     with open(f"{mrc_file}.mrc", "rb") as file:
         reader = MARCReader(file, force_utf8=True)
         cur.execute(create_statements[f"{dataset}"])
