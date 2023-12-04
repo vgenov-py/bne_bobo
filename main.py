@@ -11,22 +11,22 @@ s = time.perf_counter()
 real_s = s
 datasets = {
     "geo": "GEOGRAFICO",
-    "per": "PERSONA", 
-    "mon": "MONOMODERN", 
-    "moa": "MONOANTIGU", 
-    "ent": "ENTIDAD", 
-    "ser": "SERIADA", 
-    "mss": "MANUSCRITO"
+    # "per": "PERSONA", 
+    # "mon": "MONOMODERN", 
+    # "moa": "MONOANTIGU", 
+    # "ent": "ENTIDAD", 
+    # "ser": "SERIADA", 
+    # "mss": "MANUSCRITO"
 }
 
 urls = (
     "https://www.bne.es/redBNE/SuministroRegistros/Autoridades/GEOGRAFICO.zip",
-    "https://www.bne.es/redBNE/SuministroRegistros/Bibliograficos/MONOMODERN.zip",
-    "https://www.bne.es/redBNE/SuministroRegistros/Bibliograficos/MANUSCRITO.zip",
-    "https://www.bne.es/redBNE/SuministroRegistros/Autoridades/PERSONA.zip",
-    "https://www.bne.es/redBNE/SuministroRegistros/Autoridades/ENTIDAD.zip",
-    "https://www.bne.es/redBNE/SuministroRegistros/Bibliograficos/SERIADA.zip",
-    "https://www.bne.es/redBNE/SuministroRegistros/Bibliograficos/MONOANTIGU.zip"
+    # "https://www.bne.es/redBNE/SuministroRegistros/Bibliograficos/MONOMODERN.zip",
+    # "https://www.bne.es/redBNE/SuministroRegistros/Bibliograficos/MANUSCRITO.zip",
+    # "https://www.bne.es/redBNE/SuministroRegistros/Autoridades/PERSONA.zip",
+    # "https://www.bne.es/redBNE/SuministroRegistros/Autoridades/ENTIDAD.zip",
+    # "https://www.bne.es/redBNE/SuministroRegistros/Bibliograficos/SERIADA.zip",
+    # "https://www.bne.es/redBNE/SuministroRegistros/Bibliograficos/MONOANTIGU.zip"
     )
 
 with concurrent.futures.ThreadPoolExecutor() as executor:
@@ -41,7 +41,7 @@ with concurrent.futures.ThreadPoolExecutor() as executor:
         z_file = zipfile.ZipFile(z_file_name, "r")
         z_file.extractall()
         z_file.close()
-    # tuple(executor.map(a,urls))
+    tuple(executor.map(a,urls))
 
 
 print(time.perf_counter()-s)

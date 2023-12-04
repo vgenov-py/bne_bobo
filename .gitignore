@@ -1,0 +1,9 @@
+venv
+__pycache__
+*.mrc
+*.db
+*.zip
+*.csv
+*.ods
+*.xml
+*.txt
