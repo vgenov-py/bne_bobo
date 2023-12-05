@@ -11,6 +11,13 @@ def human_fields(dataset) -> list:
     for field in fields:
         result += f"{field}, "
     return result[:-2]
+
+def marc_fields(dataset) -> list:
+    result = ""
+    fields = tuple(filter(lambda f: f.startswith("t_"), (row[1] for row in cur.execute(f"pragma table_info({dataset});"))))
+    for field in fields:
+        result += f"{field}, "
+    return result[:-2]
 '''
 sqlite3 bne.db -header -csv -separator ";" " {query} " > {file_name}.csv
 sqlite3 bne.db -json " {self.query(count=False, limit=False)} " > {file_name}.json
@@ -62,6 +69,26 @@ def export_xml(dataset:str) -> None:
     with open(f"{datasets[dataset].lower()}-XML.xml", "w", encoding="utf-8") as file:
         file.write(data)
     
+def export_mrc_xml(dataset:str) -> None:
+    print(f"Exportando {dataset} en MARC XML")
+    headers = marc_fields(dataset)
+    query = f"SELECT {headers} FROM {dataset};"
+    headers = headers.split(",")
+    data = cur.execute(query)
+    result = '''<?xml version="1.0" encoding="UTF-8"?>\n<list>\n'''
+    for row in data:
+        to_add = "    <item>\n"
+        for i, dc in enumerate(row):
+            header = headers[i]
+            if dc:
+                to_add += f"            <{header}>{dc}</{header}>\n"
+            else:
+                continue
+        to_add += "    </item>\n"
+        result += to_add
+    result += "</list>\n"
+    with open(f"{datasets[dataset].lower()}-MARCXML.xml", "w", encoding="utf-8") as file:
+        file.write(result)
 
 if __name__ == "__main__":
     from time import perf_counter
@@ -70,4 +97,5 @@ if __name__ == "__main__":
     export_txt("geo")
     export_json("geo")
     export_xml("geo")
+    export_mrc_xml("geo")
     print(perf_counter() - s)
