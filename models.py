@@ -740,6 +740,56 @@ query_create_vid = '''
     );
 '''
 
+query_create_par = '''
+    CREATE VIRTUAL TABLE IF NOT EXISTS par USING FTS5(
+        id,
+        t_001,
+        t_007,
+        t_008,
+        t_015,
+        t_016,
+        t_017,
+        t_020,
+        t_024,
+        t_035,
+        t_040,
+        t_041,
+        t_080,
+        t_084,
+        t_100,
+        t_245,
+        t_246,
+        t_260,
+        t_264,
+        t_300,
+        t_336,
+        t_337,
+        t_440,
+        t_490,
+        t_500,
+        t_504,
+        t_505,
+        t_520,
+        t_529,
+        t_546,
+        t_561,
+        t_563,
+        t_586,
+        t_594,
+        t_600,
+        t_610,
+        t_611,
+        t_630,
+        t_650,
+        t_651,
+        t_653,
+        t_655,
+        t_700,
+        t_740,
+        t_856
+    );
+'''
+
 create_statements = {
     "per": query_create_per, 
     "geo": query_create_geo, 
@@ -749,6 +799,7 @@ create_statements = {
     "ser":query_create_ser,
     "mss": query_create_mss,
     "vid": query_create_vid,
+    "par": query_create_par,
     "queries": query_create_queries
     # "per_fts": query_create_per_fts, 
     # "geo_fts": query_create_geo_fts, 

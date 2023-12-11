@@ -50,3 +50,4 @@ python main.py
 {fichero}-{ENCODING||FILE_EXTENSION}.zip
 ```
 * **Ejemplo:** geografico-TXT.zip - geografico-UTF8.zip
+* El nivel de compresión se ha mantenido constante

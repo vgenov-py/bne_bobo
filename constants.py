@@ -1,5 +1,6 @@
 datasets = {
     "vid": "VIDEO",
+    "par": "MUSICAESC",
     "geo": "GEOGRAFICO",
     "per": "PERSONA", 
     "mon": "MONOMODERN", 
@@ -11,6 +12,7 @@ datasets = {
 
 urls = (
     "https://www.bne.es/redBNE/SuministroRegistros/Bibliograficos/VIDEO.zip",
+    "https://www.bne.es/redBNE/SuministroRegistros/Bibliograficos/MUSICAESC.zip",
     "https://www.bne.es/redBNE/SuministroRegistros/Autoridades/GEOGRAFICO.zip",
     "https://www.bne.es/redBNE/SuministroRegistros/Bibliograficos/MONOMODERN.zip",
     "https://www.bne.es/redBNE/SuministroRegistros/Bibliograficos/MANUSCRITO.zip",
