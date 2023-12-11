@@ -37,3 +37,16 @@ python main.py
 ### Consideraciones
 
 1. Para descargar los conjuntos activar la siguiente línea en **main** --> **tuple(executor.map(a,urls))**
+
+### Crear ficheros para datosabiertos
+
+* Todos los ficheros con sus respectivas extensiones, son generados a partir de la base de datos **bne.db**, la misma debe ser generada **previamente** a la ejecucción de **create_files.py**
+
+1. Ejecutar **create_files.py**
+
+* Todos los ficheros serán generados correctamente en bucle con la siguiente denominación:
+
+```
+{fichero}-{ENCODING||FILE_EXTENSION}.zip
+```
+* **Ejemplo:** geografico-TXT.zip - geografico-UTF8.zip

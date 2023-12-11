@@ -10,8 +10,8 @@ from os import system
 s = time.perf_counter()
 real_s = s
 datasets = {
-    "vid": "VIDEO",
-    # "geo": "GEOGRAFICO",
+    # "vid": "VIDEO",
+    "geo": "GEOGRAFICO",
     # "per": "PERSONA", 
     # "mon": "MONOMODERN", 
     # "moa": "MONOANTIGU", 
@@ -21,15 +21,15 @@ datasets = {
 }
 
 urls = (
-    "https://www.bne.es/redBNE/SuministroRegistros/Bibliograficos/VIDEO.zip",
-    # "https://www.bne.es/redBNE/SuministroRegistros/Autoridades/GEOGRAFICO.zip",
+    # "https://www.bne.es/redBNE/SuministroRegistros/Bibliograficos/VIDEO.zip",
+    "https://www.bne.es/redBNE/SuministroRegistros/Autoridades/GEOGRAFICO.zip",
     # "https://www.bne.es/redBNE/SuministroRegistros/Bibliograficos/MONOMODERN.zip",
     # "https://www.bne.es/redBNE/SuministroRegistros/Bibliograficos/MANUSCRITO.zip",
     # "https://www.bne.es/redBNE/SuministroRegistros/Autoridades/PERSONA.zip",
     # "https://www.bne.es/redBNE/SuministroRegistros/Autoridades/ENTIDAD.zip",
     # "https://www.bne.es/redBNE/SuministroRegistros/Bibliograficos/SERIADA.zip",
     # "https://www.bne.es/redBNE/SuministroRegistros/Bibliograficos/MONOANTIGU.zip"
-    )
+)
 
 with concurrent.futures.ThreadPoolExecutor() as executor:
     def a(url):
@@ -43,7 +43,7 @@ with concurrent.futures.ThreadPoolExecutor() as executor:
         z_file = zipfile.ZipFile(z_file_name, "r")
         z_file.extractall()
         z_file.close()
-    # tuple(executor.map(a,urls))
+    tuple(executor.map(a,urls))
 
 
 print(time.perf_counter()-s)
@@ -52,7 +52,7 @@ cur.execute(create_statements["queries"])
 cur = con.cursor()
 
 for dataset, mrc_file in datasets.items():
-    if dataset not in ("vid"):
+    if dataset not in ("vid", "geo"):
         continue
     with open(f"{mrc_file}.mrc", "rb") as file:
         reader = MARCReader(file, force_utf8=True)

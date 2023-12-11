@@ -2,6 +2,8 @@ from os import system
 from constants import datasets
 import sqlite3
 import csv
+from zipfile import ZipFile
+import zipfile
 
 con = sqlite3.connect("bne.db")
 cur = con.cursor()
@@ -33,6 +35,12 @@ def export_csv(dataset:str) -> None:
     system(f"cp {file_name} ./{file_name[:-8]}CP1252.csv")
     print(f"Exportando {dataset} en ODS")
     system(f"cp {file_name} ./{file_name[:-8]}ODS.ods")
+    with ZipFile(file_name.replace("csv", "zip"), 'w', zipfile.ZIP_DEFLATED) as myzip:
+        myzip.write(file_name)
+    with ZipFile(f"{file_name[:-8]}CP1252.csv".replace("csv", "zip"), 'w', zipfile.ZIP_DEFLATED) as myzip:
+        myzip.write(f"{file_name[:-8]}CP1252.csv")
+    with ZipFile(f"{file_name[:-8]}ODS.ods".replace("ods", "zip"), 'w', zipfile.ZIP_DEFLATED) as myzip:
+        myzip.write(f"{file_name[:-8]}ODS.ods")
 
 def export_txt(dataset:str) -> None:
     print(f"Exportando {dataset} en TXT-UTF8")
@@ -40,6 +48,8 @@ def export_txt(dataset:str) -> None:
     query = f"SELECT {human_fields(dataset)} FROM {dataset};"
     command = f'''sqlite3 bne.db -header -csv -separator "|" " {query} " > {file_name}'''
     system(command)
+    with ZipFile(file_name.replace("txt", "zip"), 'w', zipfile.ZIP_DEFLATED) as myzip:
+        myzip.write(file_name)
 
 def export_json(dataset:str) -> None:
     print(f"Exportando {dataset} en JSON")
@@ -47,6 +57,8 @@ def export_json(dataset:str) -> None:
     query = f"SELECT {human_fields(dataset)} FROM {dataset};"
     command = f'''sqlite3 bne.db -json " {query} " > {file_name}'''
     system(command)
+    with ZipFile(file_name.replace("json", "zip"), 'w', zipfile.ZIP_DEFLATED) as myzip:
+        myzip.write(file_name)
 
 def export_xml(dataset:str) -> None:
     print(f"Exportando {dataset} en XML")
@@ -66,8 +78,11 @@ def export_xml(dataset:str) -> None:
         data += to_add
     data += "</list>\n"
     file.close()
-    with open(f"{datasets[dataset].lower()}-XML.xml", "w", encoding="utf-8") as file:
+    file_name = f"{datasets[dataset].lower()}-XML.xml"
+    with open(file_name, "w", encoding="utf-8") as file:
         file.write(data)
+    with ZipFile(file_name.replace("xml", "zip"), 'w', zipfile.ZIP_DEFLATED) as myzip:
+        myzip.write(file_name)
     
 def export_mrc_xml(dataset:str) -> None:
     print(f"Exportando {dataset} en MARC XML")
@@ -87,8 +102,11 @@ def export_mrc_xml(dataset:str) -> None:
         to_add += "    </item>\n"
         result += to_add
     result += "</list>\n"
+    file_name = f"{datasets[dataset].lower()}-MARCXML.xml"
     with open(f"{datasets[dataset].lower()}-MARCXML.xml", "w", encoding="utf-8") as file:
         file.write(result)
+    with ZipFile(file_name.replace("xml", "zip"), 'w', zipfile.ZIP_DEFLATED) as myzip:
+        myzip.write(file_name)
 
 if __name__ == "__main__":
     from time import perf_counter
