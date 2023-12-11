@@ -553,6 +553,80 @@ def extract_values(dataset:str ,record:dict) -> tuple:
         humans.append(mon_subject(record, ("655")))
         result += humans
 
+    elif dataset == "vid":
+        result.append(record.get("001")[2:] if record.get("001") else None)
+        result.append(record.get("001"))
+        result.append(record.get("007"))
+        result.append(record.get("008"))
+        result.append(record.get("017"))
+        result.append(record.get("041"))
+        result.append(record.get("080"))
+        result.append(record.get("100"))
+        result.append(record.get("245"))
+        result.append(record.get("246"))
+        result.append(record.get("260"))
+        result.append(record.get("264"))
+        result.append(record.get("300"))
+        result.append(record.get("440"))
+        result.append(record.get("490"))
+        result.append(record.get("500"))
+        result.append(record.get("504"))
+        result.append(record.get("505"))
+        result.append(record.get("520"))
+        result.append(record.get("529"))
+        result.append(record.get("546"))
+        result.append(record.get("561"))
+        result.append(record.get("563"))
+        result.append(record.get("586"))
+        result.append(record.get("594"))
+        result.append(record.get("600"))
+        result.append(record.get("610"))
+        result.append(record.get("611"))
+        result.append(record.get("630"))
+        result.append(record.get("650"))
+        result.append(record.get("651"))
+        result.append(record.get("653"))
+        result.append(record.get("655"))
+        result.append(record.get("700"))
+        result.append(record.get("740"))
+
+        humans = []
+
+        humans.append(country_of_publication(record.get("008")))
+        humans.append(main_language(record.get("008")))
+        humans.append(vid_subtitle_language(record.get("041")))
+        humans.append(vid_other_languages(record.get("041")))
+        humans.append(original_language(record.get("041")))
+        # humans.append(vid_support(record.get("007")))
+        # humans.append(vid_color(record.get("007")))
+        # humans.append(vid_sound(record.get("007")))
+        humans.append(publication_date(record.get("008")))
+        humans.append(decade(record.get("008")))
+        humans.append(century(record.get("008")))
+        humans.append(legal_deposit(record.get("017")))
+        humans.append(get_single_dollar(record.get("080"), "a"))
+        humans.append(mon_authors(record.get("100"), record.get("700")))
+        humans.append(mon_title(record.get("245")))
+        humans.append(get_single_dollar(record.get("245"), "c"))
+        humans.append(mon_other_titles(record.get("246"), record.get("740")))
+        humans.append(mon_publication_place(record.get("260"), record.get("264")))
+        humans.append(get_single_dollar(record.get("300"), "a"))
+        humans.append(get_single_dollar(record.get("300"), "b"))
+        humans.append(get_single_dollar(record.get("300"), "c"))
+        humans.append(get_single_dollar(record.get("300"), "e"))
+        humans.append(mon_serie(record.get("440"), record.get("490")))
+        humans.append(get_single_dollar(record.get("505"), "a"))
+        try:
+            humans.append((mon_notes(record) + get_single_dollar(record.get("520"), "a"))) # notes
+        except TypeError:
+            humans.append(None)
+        humans.append(get_single_dollar(record.get("561"), "a"))
+        humans.append(get_single_dollar(record.get("586"), "a"))
+        humans.append(get_single_dollar(record.get("529"), "a"))
+        humans.append(mon_subject(record, ("600", "610", "611", "630", "650", "651", "653")))
+        humans.append(mon_subject(record, ("655")))
+        # result += humans
+   
     return result
 
 '''
@@ -1250,6 +1324,67 @@ def ser_key_title(value:str) -> str:
     else:
         return d_b
     
+'''
+VID:
+'''
+
+@stripper
+def vid_other_languages(value:str) -> str:
+    '''041: b, d, f,  k'''
+    if not value:
+        return
+    r = []
+    dollars = ["b", "d", "f", "k"]
+    for d in dollars:
+        lang = get_single_dollar(value, d)
+        while lang:
+            r.append(lang)
+            value = value.replace(f"|{d}{lang}", "")
+            lang = get_single_dollar(value, d)
+    result = ""
+    for v in r:
+        lang = languages.get(v.strip())
+        if lang:
+            result += f"{lang}, "
+        else:
+            result += f"{v}, "
+    return result[0:-2]
+
+@stripper
+def vid_subtitle_language(value:str) -> str:
+    '''
+    041: j
+    '''
+    if not value:
+        return
+    lang = get_single_dollar(value, "j")
+    if lang:
+        lang = languages.get(lang.strip())
+        return lang
+    
+@stripper
+def vid_support(value:str) -> str:
+    '''
+    007: 01
+    c - Cartucho de película
+    f - Casete de película
+    o - Rollo de película
+    r - Bobina de película
+    u - No especificado
+    z - Otro
+    '''
+    if not value:
+        return
+    result = get_single_dollar(value, "a")
+    if result:
+        result = result.strip()
+        match result[0:2]:
+            case "c":
+                return 
+    return result
+
+    
+   
 if __name__ == "__main__":
     import unittest
     class Test_humanizer(unittest.TestCase):
