@@ -56,16 +56,16 @@ python main.py
 
 * Para actualizar la última fecha de modificación de un **paquete***, debemos seguir los siguientes pasos
 * *paquete/package: Entidad que contiene todos los ficheros asociados de un determinado dataset
+* Se utilizará como ejemplo el paquete vito_test
 
-
-1. Ejecutar la acción **package_patch** con método **POST**
+1. Obtener id del paquete a modificar
 
 ```
-POST https://datosabiertos.bne.es/api/3/action/package_patch?id=vito_test
+GET https://datosabiertos.bne.es/api/3/action/package_show?id=vito_test
 ```
 
 ```json
-//Ejemplo de respuesta:
+//Respuesta:
 {
   "help": "https://datosabiertos.bne.es/api/3/action/help_show?name=package_patch",
   "success": true,
@@ -84,5 +84,17 @@ POST https://datosabiertos.bne.es/api/3/action/package_patch?id=vito_test
   }
 }
 ```
+2. Ejecutar la acción **package_patch** con método **POST** y agregar al body el identificador
+
+```
+POST https://datosabiertos.bne.es/api/3/action/package_patch?id=vito_test
+```
+```json
+//body
+{
+  "id":"8405ee20-c145-4cd7-bdd4-539b39cb1a86"
+}
+```
+
 
 El parámetro **metadata_modified**, se actualizará automáticamente.
