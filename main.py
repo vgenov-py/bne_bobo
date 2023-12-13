@@ -11,27 +11,29 @@ from os import system
 s = time.perf_counter()
 real_s = s
 datasets = {
-    "vid": "VIDEO",
-    "par": "MUSICAESC",
-    "geo": "GEOGRAFICO",
-    "per": "PERSONA", 
-    "mon": "MONOMODERN", 
-    "moa": "MONOANTIGU", 
-    "ent": "ENTIDAD", 
-    "ser": "SERIADA", 
-    "mss": "MANUSCRITO"
+    "ele": "RECELECTRO",
+    # "vid": "VIDEO",
+    # "par": "MUSICAESC",
+    # "geo": "GEOGRAFICO",
+    # "per": "PERSONA", 
+    # "mon": "MONOMODERN", 
+    # "moa": "MONOANTIGU", 
+    # "ent": "ENTIDAD", 
+    # "ser": "SERIADA", 
+    # "mss": "MANUSCRITO"
 }
 
 urls = (
-    "https://www.bne.es/redBNE/SuministroRegistros/Bibliograficos/VIDEO.zip",
-    "https://www.bne.es/redBNE/SuministroRegistros/Bibliograficos/MUSICAESC.zip",
-    "https://www.bne.es/redBNE/SuministroRegistros/Autoridades/GEOGRAFICO.zip",
-    "https://www.bne.es/redBNE/SuministroRegistros/Bibliograficos/MONOMODERN.zip",
-    "https://www.bne.es/redBNE/SuministroRegistros/Bibliograficos/MANUSCRITO.zip",
-    "https://www.bne.es/redBNE/SuministroRegistros/Autoridades/PERSONA.zip",
-    "https://www.bne.es/redBNE/SuministroRegistros/Autoridades/ENTIDAD.zip",
-    "https://www.bne.es/redBNE/SuministroRegistros/Bibliograficos/SERIADA.zip",
-    "https://www.bne.es/redBNE/SuministroRegistros/Bibliograficos/MONOANTIGU.zip"
+    "https://www.bne.es/redBNE/SuministroRegistros/Bibliograficos/RECELECTRO.zip",
+    # "https://www.bne.es/redBNE/SuministroRegistros/Bibliograficos/VIDEO.zip",
+    # "https://www.bne.es/redBNE/SuministroRegistros/Bibliograficos/MUSICAESC.zip",
+    # "https://www.bne.es/redBNE/SuministroRegistros/Autoridades/GEOGRAFICO.zip",
+    # "https://www.bne.es/redBNE/SuministroRegistros/Bibliograficos/MONOMODERN.zip",
+    # "https://www.bne.es/redBNE/SuministroRegistros/Bibliograficos/MANUSCRITO.zip",
+    # "https://www.bne.es/redBNE/SuministroRegistros/Autoridades/PERSONA.zip",
+    # "https://www.bne.es/redBNE/SuministroRegistros/Autoridades/ENTIDAD.zip",
+    # "https://www.bne.es/redBNE/SuministroRegistros/Bibliograficos/SERIADA.zip",
+    # "https://www.bne.es/redBNE/SuministroRegistros/Bibliograficos/MONOANTIGU.zip"
 )
 
 with concurrent.futures.ThreadPoolExecutor() as executor:
@@ -50,13 +52,13 @@ with concurrent.futures.ThreadPoolExecutor() as executor:
 
 
 print(time.perf_counter()-s)
-con = sqlite3.connect("bne.db")
+con = sqlite3.connect("ele.db")
 cur.execute(create_statements["queries"])
 cur = con.cursor()
 
 for dataset, mrc_file in datasets.items():
-    # if dataset not in ("vid", "geo"):
-    #     continue
+    if dataset not in ("ele"):
+        continue
     with open(f"{mrc_file}.mrc", "rb") as file:
         reader = MARCReader(file, force_utf8=True)
         cur.execute(create_statements[f"{dataset}"])

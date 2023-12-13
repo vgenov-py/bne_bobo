@@ -179,6 +179,7 @@ def extract_values(dataset:str ,record:dict) -> tuple:
         result.append(record.get("830"))
         result.append(record.get("980"))
         result.append(record.get("994"))
+        result.append(record.get("856"))
         result.append(mon_per_id(record.get("100")))
 
         "Map dated Jun 5:"
@@ -241,6 +242,8 @@ def extract_values(dataset:str ,record:dict) -> tuple:
         result.append(mon_subject(record, ("655", "752", "770","772", "773", "774", "775", "776", "777", "787", "800", "810", "811", "830", "980")))
         "Tipo de documento:"
         result.append(mon_document_type(record.get("994")))
+        "url:"
+        result.append(url(record.get("856")))
 
     elif dataset == "moa":
         result.append(record.get("001")[2:] if record.get("001") else uuid4().hex)
@@ -284,9 +287,9 @@ def extract_values(dataset:str ,record:dict) -> tuple:
         result.append(record.get("710"))
         result.append(record.get("740"))
         result.append(record.get("752"))
-        result.append(record.get("856"))
         result.append(record.get("881"))
         result.append(record.get("994"))
+        result.append(record.get("856"))
         humans = []
         humans.append(mon_per_id(record.get("100")))
         humans.append(country_of_publication(record.get("008")))
@@ -341,10 +344,10 @@ def extract_values(dataset:str ,record:dict) -> tuple:
         humans.append(mon_subject(record, ("655")))
         "Lugar relacionado:"
         humans.append(moa_related_place(record.get("752")))
-        "url:"
-        humans.append(moa_url(record.get("856")))
         "Tipo de documento:"
         humans.append(moa_document_type(record.get("994")))
+        "url:"
+        humans.append(url(record.get("856")))
         result.extend(humans)
         
     elif dataset == "ent":
@@ -448,6 +451,7 @@ def extract_values(dataset:str ,record:dict) -> tuple:
         result.append(record.get("655"))
         result.append(record.get("700"))
         result.append(record.get("740"))
+        result.append(record.get("856"))
 
         humans = []
 
@@ -481,6 +485,7 @@ def extract_values(dataset:str ,record:dict) -> tuple:
         humans.append(get_single_dollar(record.get("561"), "a"))
         humans.append(mon_subject(record, ("600", "610", "611", "630", "650", "651", "653")))
         humans.append(mon_subject(record, ("655")))
+        humans.append(url(record.get("856")))
 
         result += humans
 
@@ -519,6 +524,7 @@ def extract_values(dataset:str ,record:dict) -> tuple:
         result.append(record.get("655"))
         result.append(record.get("700"))
         result.append(record.get("740"))
+        result.append(record.get("856"))
 
         humans = []
 
@@ -551,6 +557,7 @@ def extract_values(dataset:str ,record:dict) -> tuple:
         humans.append(get_single_dollar(record.get("529"), "a"))
         humans.append(mon_subject(record, ("600", "610", "611", "630", "650", "651", "653")))
         humans.append(mon_subject(record, ("655")))
+        humans.append(url(record.get("856")))
         result += humans
 
     elif dataset == "vid":
@@ -559,26 +566,41 @@ def extract_values(dataset:str ,record:dict) -> tuple:
         result.append(record.get("007"))
         result.append(record.get("008"))
         result.append(record.get("017"))
+        result.append(record.get("020"))
+        result.append(record.get("024"))
+        result.append(record.get("028"))
         result.append(record.get("041"))
         result.append(record.get("080"))
         result.append(record.get("100"))
+        result.append(record.get("110"))
+        result.append(record.get("130"))
+        result.append(record.get("240"))
         result.append(record.get("245"))
         result.append(record.get("246"))
+        result.append(record.get("250"))
         result.append(record.get("260"))
         result.append(record.get("264"))
         result.append(record.get("300"))
+        result.append(record.get("337"))
+        result.append(record.get("338"))
+        result.append(record.get("344"))
+        result.append(record.get("345"))
+        result.append(record.get("346"))
         result.append(record.get("440"))
         result.append(record.get("490"))
         result.append(record.get("500"))
-        result.append(record.get("504"))
         result.append(record.get("505"))
+        result.append(record.get("508"))
+        result.append(record.get("511"))
+        result.append(record.get("518"))
         result.append(record.get("520"))
-        result.append(record.get("529"))
+        result.append(record.get("521"))
+        result.append(record.get("530"))
         result.append(record.get("546"))
-        result.append(record.get("561"))
-        result.append(record.get("563"))
         result.append(record.get("586"))
+        result.append(record.get("590"))
         result.append(record.get("594"))
+        result.append(record.get("597"))
         result.append(record.get("600"))
         result.append(record.get("610"))
         result.append(record.get("611"))
@@ -588,7 +610,9 @@ def extract_values(dataset:str ,record:dict) -> tuple:
         result.append(record.get("653"))
         result.append(record.get("655"))
         result.append(record.get("700"))
+        result.append(record.get("710"))
         result.append(record.get("740"))
+        result.append(record.get("856"))
 
         humans = []
 
@@ -597,35 +621,63 @@ def extract_values(dataset:str ,record:dict) -> tuple:
         humans.append(vid_subtitle_language(record.get("041")))
         humans.append(vid_other_languages(record.get("041")))
         humans.append(original_language(record.get("041")))
-        # humans.append(vid_support(record.get("007")))
-        # humans.append(vid_color(record.get("007")))
-        # humans.append(vid_sound(record.get("007")))
+        humans.append(vid_physical_description(record.get("007"), "soporte"))
+        humans.append(vid_physical_description(record.get("007"), "color"))
+        humans.append(vid_physical_description(record.get("007"), "sonido"))
         humans.append(publication_date(record.get("008")))
         humans.append(decade(record.get("008")))
         humans.append(century(record.get("008")))
         humans.append(legal_deposit(record.get("017")))
+        # isbn
+        humans.append(get_single_dollar(record.get("020"), "a"))
+        # otros_identificadores
+        humans.append(other_identifiers(record.get("024")))
+        # CDU
         humans.append(get_single_dollar(record.get("080"), "a"))
         humans.append(mon_authors(record.get("100"), record.get("700")))
+        # título normalizado
+        humans.append(get_single_dollar(record.get("130"), "a") + " /**/ " + get_single_dollar(record.get("240"), "a") if get_single_dollar(record.get("240"), "a") and get_single_dollar(record.get("130"), "a") else get_single_dollar(record.get("130"), "a"))
         humans.append(mon_title(record.get("245")))
-        humans.append(get_single_dollar(record.get("245"), "c"))
         humans.append(mon_other_titles(record.get("246"), record.get("740")))
+        humans.append(vid_edition(record.get("250")))
         humans.append(mon_publication_place(record.get("260"), record.get("264")))
+        # editorial
+        humans.append(get_single_dollar(record.get("260"), "b"))
+        # extensión
         humans.append(get_single_dollar(record.get("300"), "a"))
+        # otras caracter---
         humans.append(get_single_dollar(record.get("300"), "b"))
+        # dimensiones
         humans.append(get_single_dollar(record.get("300"), "c"))
+        # material anejo
         humans.append(get_single_dollar(record.get("300"), "e"))
+        # tipo de medio
+        humans.append(get_single_dollar(record.get("337"), "a"))
+        # tipo de soporte
+        humans.append(get_single_dollar(record.get("338"), "a"))
+        #sonido
+        humans.append(get_multi_dollar(record.get("344"), ("a", "b", "c"), ""))
+        #imagen_video
+        humans.append(get_multi_dollar(record.get("344"), ("a", "c", "d"), "") + "/**/" + get_multi_dollar(record.get("346"), ("a", "b"), "") if get_multi_dollar(record.get("346"), ("a", "b"), "") and  get_multi_dollar(record.get("343"), ("a", "c", "d"), "") else get_multi_dollar(record.get("343"), ("a", "c", "d"), ""))
         humans.append(mon_serie(record.get("440"), record.get("490")))
+        # equipo
+        humans.append(get_single_dollar(record.get("508"), "a"))
+        # interpretes
+        humans.append(get_single_dollar(record.get("511"), "a"))
+        # fecha lugar grabación
+        humans.append(get_single_dollar(record.get("518"), "a"))
+        # resumen
+        humans.append(get_single_dollar(record.get("520"), "a"))
+        # público
+        humans.append(get_single_dollar(record.get("521"), "a"))
+        # contenido
         humans.append(get_single_dollar(record.get("505"), "a"))
-        try:
-            humans.append((mon_notes(record) + get_single_dollar(record.get("520"), "a"))) # notes
-        except TypeError:
-            humans.append(None)
-        humans.append(get_single_dollar(record.get("561"), "a"))
-        humans.append(get_single_dollar(record.get("586"), "a"))
-        humans.append(get_single_dollar(record.get("529"), "a"))
+        humans.append(notes([get_single_dollar(record.get("500"), "a"), get_single_dollar(record.get("530"), "a"), get_single_dollar(record.get("546"), "a"), get_single_dollar(record.get("586"), "a"), get_single_dollar(record.get("586"), "a"), get_single_dollar(record.get("590"), "a"), get_single_dollar(record.get("594"), "a"), get_single_dollar(record.get("597"), "a")]))
         humans.append(mon_subject(record, ("600", "610", "611", "630", "650", "651", "653")))
         humans.append(mon_subject(record, ("655")))
-        # result += humans
+        humans.append(url(record.get("856")))
+
+        result += humans
    
     elif dataset == "par":
         result.append(record.get("001")[2:] if record.get("001") else None)
@@ -671,6 +723,65 @@ def extract_values(dataset:str ,record:dict) -> tuple:
         result.append(record.get("653"))
         result.append(record.get("655"))
         result.append(record.get("700"))
+        result.append(record.get("740"))
+        result.append(record.get("856"))
+
+    elif dataset == "ele":
+        result.append(record.get("001")[2:] if record.get("001") else None)
+        result.append(record.get("001"))
+        result.append(record.get("007"))
+        result.append(record.get("008"))
+        result.append(record.get("015"))
+        result.append(record.get("016"))
+        result.append(record.get("017"))
+        result.append(record.get("020"))
+        result.append(record.get("024"))
+        result.append(record.get("035"))
+        result.append(record.get("040"))
+        result.append(record.get("041"))
+        result.append(record.get("080"))
+        result.append(record.get("084"))
+        result.append(record.get("100"))
+        result.append(record.get("110"))
+        result.append(record.get("111"))
+        result.append(record.get("130"))
+        result.append(record.get("245"))
+        result.append(record.get("246"))
+        result.append(record.get("250"))
+        result.append(record.get("256"))
+        result.append(record.get("260"))
+        result.append(record.get("264"))
+        result.append(record.get("300"))
+        result.append(record.get("336"))
+        result.append(record.get("337"))
+        result.append(record.get("338"))
+        result.append(record.get("347"))
+        result.append(record.get("440"))
+        result.append(record.get("490"))
+        result.append(record.get("500"))
+        result.append(record.get("504"))
+        result.append(record.get("505"))
+        result.append(record.get("520"))
+        result.append(record.get("521"))
+        result.append(record.get("529"))
+        result.append(record.get("538"))
+        result.append(record.get("540"))
+        result.append(record.get("546"))
+        result.append(record.get("561"))
+        result.append(record.get("563"))
+        result.append(record.get("586"))
+        result.append(record.get("594"))
+        result.append(record.get("597"))
+        result.append(record.get("600"))
+        result.append(record.get("610"))
+        result.append(record.get("611"))
+        result.append(record.get("630"))
+        result.append(record.get("650"))
+        result.append(record.get("651"))
+        result.append(record.get("653"))
+        result.append(record.get("655"))
+        result.append(record.get("700"))
+        result.append(record.get("710"))
         result.append(record.get("740"))
         result.append(record.get("856"))
     
@@ -1269,18 +1380,21 @@ def moa_document_type( value:str) -> str:
     return "Monografía antigua (anterior a 1831)"
 
 @stripper
-def moa_url( value:str) -> str:
-    "856: |y, |3: |u"
+def url( value:str) -> str:
+    "856: |y:|3:|u,(|z)"
     if not value:
         return
     d_y = get_single_dollar(value, "y")
     d_3 = get_single_dollar(value, "3")
     d_u = get_single_dollar(value, "u")
+    d_z = get_single_dollar(value, "z")
     r = d_y if d_y else ""
     if d_3:
-        r += f", {d_3}:"
+        r += f":{d_3}"
     if d_u:
-        r += f" {d_u}"
+        r += f":{d_u}"
+    if d_z:
+        r += f",{d_z}"
     return r
 
 '''
@@ -1410,52 +1524,148 @@ def vid_subtitle_language(value:str) -> str:
         return lang
     
 @stripper
-def vid_support(value:str) -> str:
+def vid_physical_description(value:str, tag:str) -> str:
     '''
-    007: 01
+    tag: soporte||color||sonido
+    007: 
+    01:
     c - Cartucho de película
     f - Casete de película
     o - Rollo de película
     r - Bobina de película
     u - No especificado
     z - Otro
+    03:
+    c - Polícromo
+    h - Coloreado a mano
+    m - Mixto
+    n - No aplicable
+    u - Desconocido
+    z - Otro
+    (espacio) - Sin sonido (muda)
+    05:
+    a - Sonido incorporado
+    b - Sonido separado
+    u - Desconocido
     '''
     if not value:
         return
-    result = get_single_dollar(value, "a")
-    if result:
-        result = result.strip()
-        match result[0:2]:
-            case "c":
-                return 
-    return result
+    material = get_single_dollar(value, "a")
+    # return result
+    if material:
+        material = material.strip()
+        match tag:
+            case "soporte":
+                try:
+                    material = material[1]
+                except IndexError:
+                    return
+                match material:
+                    case "c":
+                        return "Cartucho de película"
+                    case "f":
+                        return "Casete de película"
+                    case "o":
+                        return "Rollo de película"
+                    case "r":
+                        return "Bobina de película"
+                    case "u":
+                        return "No especificado"
+                    case "z":
+                        return "Otro"
+            case "color":
+                try:
+                    material = material[3]
+                except IndexError:
+                    return
+                match material:
+                    case "c":
+                        return "Polícromoa"
+                    case "h":
+                        return "Coloreado a mano"
+                    case "m":
+                        return "Mixto"
+                    case "n":
+                        return "No aplicable"
+                    case "u":
+                        return "Desconocido"
+                    case "z":
+                        return "Otro"
+                    case " ":
+                        return "Sin sonido (muda)"
+            case "sonido":
+                try:
+                    material = material[5]
+                except IndexError:
+                    return
+                match material:
+                    case "a":
+                        return "Sonido incorporado"
+                    case "b":
+                        return "Sonido separado"
+                    case "u":
+                        return "Desconocido"
 
-    
-   
-if __name__ == "__main__":
-    import unittest
-    class Test_humanizer(unittest.TestCase):
+@stripper                   
+def vid_edition(value:str) -> str:
+    if not value:
+        return
+    d_a = get_single_dollar(value, "a")
+    if d_a:
+        d_b = get_single_dollar(value, "b")
+        if d_b:
+            return f"{d_a}, {d_b}"
+        return d_a
 
-        def test_lat_lng(self):
-            self.assertEqual(f_lat_lng("|d W0910335|e W0910335|f N0332432|g N0332432|2 geonames"), "91.0335, 33.2432")
-            self.assertEqual(f_lat_lng("|d W0051240|e W0051240|f N0373555|g N0373555|2 ngn"), "5.124, 37.3555")
-            self.assertEqual(f_lat_lng("|d E0020143|e E0020143|f N0412156|g N0412156|2 geonames"), "2.0143, 41.2156")
+@stripper
+def get_multi_dollar(value: str, dollars: tuple, separator: str = ", ") -> str:
+    if not value:
+        return
+    result = ""
+    for d in dollars:
+        d = get_single_dollar(value, d)
+        if d:
+            d = d.strip()
+            result += f"{d}{separator}"
+    return result[:len(result) - len(separator)]
 
-        def test_mon_per_id(self):
-            self.assertEqual(mon_per_id("|0 XX45333"), "XX45333")
+@stripper
+def notes(values: list) -> str:
+    result = ""
+    for value in values:
+        if value:
+            result += f"{value}{splitter}"
+    if len(result) == 0:
+        return None
+    return result[:len(result)-len(splitter)]
 
-        def test_ser_key_title(self):
-            self.assertEqual(ser_key_title(""), None)
-            self.assertEqual(ser_key_title(None), None)
-            self.assertEqual(ser_key_title("|a XX|b DD"), "XX DD")
-            self.assertEqual(ser_key_title("|a XX"), "XX")
-            self.assertEqual(ser_key_title("|b XX"), "XX")
-        def test_country_of_publication(self):
-            '''|a 900725u196u    sp ar        s0   b0spa  '''
-            '''|a 070418d18691869sp uu pe      0   b0spa  '''
-            self.assertEqual(country_of_publication("|a 900725u196u    sp ar        s0   b0spa  "), "España")
-            self.assertEqual(country_of_publication("|a 070418d18691869sp uu pe      0   b0spa  "), "España")
-        def test_per_other_names(self):
-            self.assertEqual(per_other_names("|a Abad Gallego, Juan Carlos|d 1960- /**/ |a Abad Gallego, Xoán C.|d 1960-"), "Abad Gallego, Juan Carlos, ( 1960-) /**/ Abad Gallego, Xoán C., ( 1960-)")
+# if __name__ == "__main__":
+#     import unittest
+#     class Test_humanizer(unittest.TestCase):
 
-    unittest.main()
+#         def test_lat_lng(self):
+#             self.assertEqual(f_lat_lng("|d W0910335|e W0910335|f N0332432|g N0332432|2 geonames"), "91.0335, 33.2432")
+#             self.assertEqual(f_lat_lng("|d W0051240|e W0051240|f N0373555|g N0373555|2 ngn"), "5.124, 37.3555")
+#             self.assertEqual(f_lat_lng("|d E0020143|e E0020143|f N0412156|g N0412156|2 geonames"), "2.0143, 41.2156")
+
+#         def test_mon_per_id(self):
+#             self.assertEqual(mon_per_id("|0 XX45333"), "XX45333")
+
+#         def test_ser_key_title(self):
+#             self.assertEqual(ser_key_title(""), None)
+#             self.assertEqual(ser_key_title(None), None)
+#             self.assertEqual(ser_key_title("|a XX|b DD"), "XX DD")
+#             self.assertEqual(ser_key_title("|a XX"), "XX")
+#             self.assertEqual(ser_key_title("|b XX"), "XX")
+#         def test_country_of_publication(self):
+#             '''|a 900725u196u    sp ar        s0   b0spa  '''
+#             '''|a 070418d18691869sp uu pe      0   b0spa  '''
+#             self.assertEqual(country_of_publication("|a 900725u196u    sp ar        s0   b0spa  "), "España")
+#             self.assertEqual(country_of_publication("|a 070418d18691869sp uu pe      0   b0spa  "), "España")
+#         def test_per_other_names(self):
+#             self.assertEqual(per_other_names("|a Abad Gallego, Juan Carlos|d 1960- /**/ |a Abad Gallego, Xoán C.|d 1960-"), "Abad Gallego, Juan Carlos, ( 1960-) /**/ Abad Gallego, Xoán C., ( 1960-)")
+
+#         def test_vid_support(self):
+#             self.assertEqual(vid_support("|a vf*cb|ho|"), "x")
+
+#     unittest.main()
