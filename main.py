@@ -11,7 +11,10 @@ from os import system
 s = time.perf_counter()
 real_s = s
 datasets = {
-    "ele": "RECELECTRO",
+    "gra0": "GRAFNOPRO",
+    "gra1": "GRAFPRO",
+    # "son":"GRABSONORA",
+    # "ele": "RECELECTRO",
     # "vid": "VIDEO",
     # "par": "MUSICAESC",
     # "geo": "GEOGRAFICO",
@@ -24,7 +27,10 @@ datasets = {
 }
 
 urls = (
-    "https://www.bne.es/redBNE/SuministroRegistros/Bibliograficos/RECELECTRO.zip",
+    "https://www.bne.es/redBNE/SuministroRegistros/Bibliograficos/GRAFNOPRO.zip",
+    "https://www.bne.es/redBNE/SuministroRegistros/Bibliograficos/GRAFPRO.zip",
+    # "https://www.bne.es/redBNE/SuministroRegistros/Bibliograficos/GRABSONORA.zip",
+    # "https://www.bne.es/redBNE/SuministroRegistros/Bibliograficos/RECELECTRO.zip",
     # "https://www.bne.es/redBNE/SuministroRegistros/Bibliograficos/VIDEO.zip",
     # "https://www.bne.es/redBNE/SuministroRegistros/Bibliograficos/MUSICAESC.zip",
     # "https://www.bne.es/redBNE/SuministroRegistros/Autoridades/GEOGRAFICO.zip",
@@ -52,13 +58,14 @@ with concurrent.futures.ThreadPoolExecutor() as executor:
 
 
 print(time.perf_counter()-s)
-con = sqlite3.connect("ele.db")
+con = sqlite3.connect("gra.db")
 cur.execute(create_statements["queries"])
 cur = con.cursor()
 
 for dataset, mrc_file in datasets.items():
-    if dataset not in ("ele"):
+    if dataset not in ("gra0", "gra1"):
         continue
+    dataset = dataset[:3]
     with open(f"{mrc_file}.mrc", "rb") as file:
         reader = MARCReader(file, force_utf8=True)
         cur.execute(create_statements[f"{dataset}"])
