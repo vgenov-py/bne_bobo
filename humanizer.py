@@ -791,15 +791,12 @@ def extract_values(dataset:str ,record:dict) -> tuple:
         result.append(record.get("007"))
         result.append(record.get("008"))
         result.append(record.get("015"))
-        result.append(record.get("016"))
         result.append(record.get("017"))
         result.append(record.get("020"))
         result.append(record.get("024"))
         result.append(record.get("028"))
-        result.append(record.get("035"))
         result.append(record.get("040"))
         result.append(record.get("041"))
-        result.append(record.get("047"))
         result.append(record.get("080"))
         result.append(record.get("084"))
         result.append(record.get("100"))
@@ -811,7 +808,6 @@ def extract_values(dataset:str ,record:dict) -> tuple:
         result.append(record.get("245"))
         result.append(record.get("246"))
         result.append(record.get("250"))
-        result.append(record.get("256"))
         result.append(record.get("260"))
         result.append(record.get("264"))
         result.append(record.get("300"))
@@ -820,25 +816,25 @@ def extract_values(dataset:str ,record:dict) -> tuple:
         result.append(record.get("338"))
         result.append(record.get("344"))
         result.append(record.get("347"))
+        result.append(record.get("382"))
         result.append(record.get("440"))
         result.append(record.get("490"))
         result.append(record.get("500"))
-        result.append(record.get("508"))
         result.append(record.get("505"))
+        result.append(record.get("508"))
         result.append(record.get("510"))
         result.append(record.get("511"))
         result.append(record.get("518"))
         result.append(record.get("520"))
         result.append(record.get("521"))
-        result.append(record.get("529"))
         result.append(record.get("530"))
         result.append(record.get("533"))
         result.append(record.get("538"))
         result.append(record.get("540"))
         result.append(record.get("546"))
         result.append(record.get("561"))
-        result.append(record.get("563"))
         result.append(record.get("586"))
+        result.append(record.get("593"))
         result.append(record.get("594"))
         result.append(record.get("595"))
         result.append(record.get("596"))
@@ -853,9 +849,77 @@ def extract_values(dataset:str ,record:dict) -> tuple:
         result.append(record.get("700"))
         result.append(record.get("710"))
         result.append(record.get("740"))
-        result.append(record.get("830"))
-        result.append(record.get("856"))
-    
+        result.append(record.get("856")) 
+
+        humans = []
+
+        humans.append(son_physical_description(record.get("007"), "soporte"))
+        humans.append(son_physical_description(record.get("007"), "velocidad"))
+        humans.append(son_physical_description(record.get("007"), "canales"))
+        humans.append(son_physical_description(record.get("007"), "material"))
+        humans.append(country_of_publication(record.get("008")))
+        humans.append(main_language(record.get("008")))
+        humans.append(libretto_language(record.get("008")))
+        humans.append(other_languages(record.get("041")))
+        humans.append(original_language(record.get("041")))
+        humans.append(publication_date(record.get("008")))
+        humans.append(decade(record.get("008")))
+        humans.append(century(record.get("008")))
+        humans.append(legal_deposit(record.get("017")))
+        # isbn
+        humans.append(get_single_dollar(record.get("020"), "a"))
+        try:
+            humans.append(get_single_dollar(record.get("028"), "a") + get_single_dollar(record.get("028"), "b") if get_single_dollar(record.get("028"), "b") else get_single_dollar(record.get("028"), "a"))
+        except:
+            humans.append(get_single_dollar(record.get("028"), "b"))
+
+        humans.append(get_single_dollar(record.get("080"), "a"))
+        humans.append(mon_authors(record.get("100"), record.get("700")))
+        humans.append(congress_name(record.get("111")))
+        humans.append(mon_title(record.get("245")))
+        humans.append(mon_other_titles(record.get("246"), record.get("740")))
+        humans.append(vid_edition(record.get("250")))
+        humans.append(mon_publication_place(record.get("260"), record.get("264")))
+        # editorial
+        humans.append(get_single_dollar(record.get("260"), "b"))
+        # extensión
+        humans.append(get_single_dollar(record.get("300"), "a"))
+        # otras caracter---
+        humans.append(get_single_dollar(record.get("300"), "b"))
+        # dimensiones
+        humans.append(get_single_dollar(record.get("300"), "c"))
+        # material anejo
+        humans.append(get_single_dollar(record.get("300"), "e"))
+        humans.append(get_single_dollar(record.get("336"), "a"))
+        # tipo de medio
+        humans.append(get_single_dollar(record.get("337"), "a"))
+        # tipo de soporte
+        humans.append(get_single_dollar(record.get("338"), "a"))
+        # caracterísitcas archivo digital
+        humans.append(get_multi_dollar(record.get("347"), ("a", "b"), ""))
+        # sonido
+        humans.append(get_multi_dollar(record.get("344"), ("a", "b", "c", "d", "g"), ""))
+        # medio interpretación
+        humans.append(get_single_dollar(record.get("382"), "a"))
+        # equipo
+        humans.append(get_single_dollar(record.get("508"), "a"))
+        # interpretes
+        humans.append(get_single_dollar(record.get("511"), "a"))
+        # fecha lugar de grabación
+        humans.append(get_single_dollar(record.get("518"), "a"))
+        # contenido
+        humans.append(get_single_dollar(record.get("505"), "a"))
+        # serie
+        humans.append(son_serie(record.get("440"), record.get("490")))
+        # notes
+        humans.append(notes([get_single_dollar(record.get("500"), "a"), get_single_dollar(record.get("510"), "a"), get_single_dollar(record.get("520"), "a"), get_single_dollar(record.get("521"), "a"), get_single_dollar(record.get("530"), "a"), get_single_dollar(record.get("533"), "a"), get_single_dollar(record.get("538"), "a"), get_single_dollar(record.get("540"), "a"), get_single_dollar(record.get("546"), "a"), get_single_dollar(record.get("561"), "a"), get_single_dollar(record.get("586"), "a"), get_single_dollar(record.get("593"), "a"), get_single_dollar(record.get("594"), "a"), get_single_dollar(record.get("595"), "a"), get_single_dollar(record.get("596"), "a"), get_single_dollar(record.get("597"), "a")]))
+        humans.append(mon_subject(record, ("600", "610", "630", "650", "651", "653", "655")))
+        humans.append(mon_subject(record, ("655")))
+        humans.append(url(record.get("856")))
+        
+        result.extend(humans)
+
+
     elif dataset == "gra":
         result.append(record.get("001")[2:] if record.get("001") else None)
         result.append(record.get("001"))
@@ -1181,6 +1245,7 @@ def country_of_publication(value:str) -> str:
 
 @stripper
 def main_language(value:str) -> str:
+    '''008/15-17'''
     if not value:
         return
     try:
@@ -1778,6 +1843,201 @@ def notes(values: list) -> str:
     if len(result) == 0:
         return None
     return result[:len(result)-len(splitter)]
+
+@stripper
+def son_physical_description(value:str, tag:str) -> str:
+    '''
+    tag: soporte||velocidad||canales||material
+    007:
+
+    01: soporte 
+
+    b - Cinturón sonoro
+    d - Disco
+    e - Cilindro
+    g - Cartucho
+    i - Banda sonora de película
+    q  Rollo
+    r - Remoto
+    s - Casete
+    t - Bobina de cinta
+    u - No especificado
+    w - Hilo magnético
+    z - Otro
+
+    03: velocidad
+
+    b - 33 1/3 rpm
+    c - 45 rpm
+    d - 78 rpm
+    f - 1,4 m/s
+    l -  4,75 cm/s
+    n - No aplicable
+
+    04: canales
+
+    q  Cuadrafónico, multicanal o envolvente
+    s - Estereofónico
+    u - Desconocido
+    z - Otro
+    
+    10: material
+
+    l - Metal
+    m - Metal y plástico
+    n - No aplicable
+    p - Plástico
+    s - Goma laca
+    w - Cera
+"
+
+    '''
+    if not value:
+        return
+    material = get_single_dollar(value, "a")
+    # return result
+    if material:
+        material = material.strip()
+        match tag:
+            case "soporte":
+                try:
+                    material = material[1]
+                except IndexError:
+                    return
+                match material:
+                    case "b":
+                        return "Cinturón sonoro"
+                    case "d":
+                        return "Disco"
+                    case "e":
+                        return "Cilindro"
+                    case "g":
+                        return "Cartucho"
+                    case "i":
+                        return "Banda sonora de película"
+                    case "q":
+                        return "Rollo"
+                    case "r":
+                        return "Remoto"
+                    case "r":
+                        return "Remoto"
+                    case "s":
+                        return "Casete"
+                    case "t":
+                        return "Bobina de cinta"
+                    case "u":
+                        return "No especificado"
+                    case "w":
+                        return "Hilo magnético"
+                    case "z":
+                        return "Otro"
+            case "velocidad":
+                try:
+                    material = material[3]
+                except IndexError:
+                    return
+                match material:
+                    case "b":
+                        return "33 1/3 rpm"
+                    case "c":
+                        return "45 rpm"
+                    case "d":
+                        return "78 rpm"
+                    case "f":
+                        return "1,4 m/s"
+                    case "l":
+                        return "4,75 cm/s"
+                    case "n":
+                        return "No aplicable"
+            case "canales":
+                try:
+                    material = material[4]
+                except IndexError:
+                    return
+                match material:
+                    case "q":
+                        return "Cuadrafónico, multicanal o envolvente"
+                    case "s":
+                        return "Estereofónico"
+                    case "u":
+                        return "Desconocido"
+                    case "z":
+                        return "Otro"
+            case "material":
+                try:
+                    material = material[10]
+                except IndexError:
+                    return
+                match material:
+                    case "l":
+                        return "Metal"
+                    case "m":
+                        return "Metal y plástico"
+                    case "n":
+                        return "No aplicable"
+                    case "p":
+                        return "Plástico"
+                    case "s":
+                        return "Goma laca"
+                    case "s":
+                        return "Cera"
+                    
+@stripper
+def congress_name(value: str) -> str:
+    '''111: |a, n , |c , |d'''
+    if not value:
+        return
+    result = get_single_dollar(value, "a")
+    d_n = get_single_dollar(value, "n")
+    if d_n:
+        result += f" {d_n}"
+    d_c = get_single_dollar(value, "c")
+    if d_c:
+        result += f" {d_c}"
+    d_d = get_single_dollar(value, "d")
+    if d_d:
+        result += f" {d_d}"
+    return result
+
+@stripper
+def libretto_language(value:str) -> str:
+    '''008: e'''
+    value = get_single_dollar(value, "e")
+    if not value:
+        return
+    try:
+        return languages[value[:3].strip()]
+    except:
+        return value[:3].strip()
+
+@stripper
+def son_serie(value_440: str, value_490: str) -> str:
+    '''440 && 490: |a|v'''
+    if not value_440 and not value_490:
+        return
+    result = ""
+    if value_440:
+        d_a = get_single_dollar(value_440, "a")
+        result += d_a
+        d_v = get_single_dollar(value_440, "v")
+        if d_v:
+            result += d_v
+        if value_490:
+            d_a = get_single_dollar(value_490, "a")
+            result += d_a
+            d_v = get_single_dollar(value_490, "v")
+            if d_v:
+                result += d_v
+    else:
+        d_a = get_single_dollar(value_490, "a")
+        result += d_a
+        d_v = get_single_dollar(value_490, "v")
+        if d_v:
+            result += d_v
+    return result
+
+    
+
 
 # if __name__ == "__main__":
 #     import unittest
