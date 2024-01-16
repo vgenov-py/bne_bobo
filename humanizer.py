@@ -77,6 +77,7 @@ def extract_values(dataset:str ,record:dict) -> tuple:
         result.append(record.get("400"))
         result.append(record.get("500"))
         result.append(record.get("510"))
+        result.append(record.get("663"))
         result.append(record.get("670"))
         #HUMANS:
         # otros_identificadores
@@ -859,7 +860,7 @@ def extract_values(dataset:str ,record:dict) -> tuple:
         humans.append(son_physical_description(record.get("007"), "material"))
         humans.append(country_of_publication(record.get("008")))
         humans.append(main_language(record.get("008")))
-        humans.append(libretto_language(record.get("008")))
+        humans.append(son_libretto_language(record.get("041")))
         humans.append(other_languages(record.get("041")))
         humans.append(original_language(record.get("041")))
         humans.append(publication_date(record.get("008")))
@@ -874,7 +875,7 @@ def extract_values(dataset:str ,record:dict) -> tuple:
             humans.append(get_single_dollar(record.get("028"), "b"))
 
         humans.append(get_single_dollar(record.get("080"), "a"))
-        humans.append(mon_authors(record.get("100"), record.get("700")))
+        humans.append(get_authors(record.get("100"), record.get("700")))
         humans.append(congress_name(record.get("111")))
         humans.append(mon_title(record.get("245")))
         humans.append(mon_other_titles(record.get("246"), record.get("740")))
@@ -898,7 +899,7 @@ def extract_values(dataset:str ,record:dict) -> tuple:
         # caracterísitcas archivo digital
         humans.append(get_multi_dollar(record.get("347"), ("a", "b"), ""))
         # sonido
-        humans.append(get_multi_dollar(record.get("344"), ("a", "b", "c", "d", "g"), ""))
+        humans.append(get_multi_dollar(record.get("344"), ("a", "b", "c", "d", "g"), ", "))
         # medio interpretación
         humans.append(get_single_dollar(record.get("382"), "a"))
         # equipo
@@ -2000,15 +2001,15 @@ def congress_name(value: str) -> str:
     return result
 
 @stripper
-def libretto_language(value:str) -> str:
+def son_libretto_language(value:str) -> str:
     '''008: e'''
     value = get_single_dollar(value, "e")
     if not value:
         return
     try:
-        return languages[value[:3].strip()]
+        return languages[value[:4].strip()]
     except:
-        return value[:3].strip()
+        return value[:4].strip()
 
 @stripper
 def son_serie(value_440: str, value_490: str) -> str:
@@ -2036,13 +2037,39 @@ def son_serie(value_440: str, value_490: str) -> str:
             result += d_v
     return result
 
+@stripper
+def get_authors(value_100:str, value_700:str) -> str:
+    if not value_100:
+        return
     
+    value_100_e = get_single_dollar(value_100, "e")
+    value_100 = per_person_name(value_100)
+    if value_100_e:
+        value_100 = f"{value_100}({value_100_e})"
+    if value_700:
+        pre_700 = ""
+        for author in value_700.split(splitter):
+            d_e = get_single_dollar(author, "e")
+            d_a = per_person_name(author)
+            if d_e:
+                pre_700 += f"{d_a}({d_e}) {splitter}"
+            else:
+                pre_700 += f"{d_a} {splitter}"
+                
+        pre_700 = pre_700[:-len(splitter)]
+    if value_700:
+        return f"{value_100} /**/ {pre_700}"
+    return value_100
 
 
-# if __name__ == "__main__":
-#     import unittest
-#     class Test_humanizer(unittest.TestCase):
-
+if __name__ == "__main__":
+    import unittest
+    class Test_humanizer(unittest.TestCase):
+        pass
+        def test_son_libretto_language(self):
+            self.assertEqual(son_libretto_language("|d ger|e spa|e eng|e ger|g spa|g eng"), "español")
+        def test_get_authors(self):
+            self.assertEqual(get_authors("|a Soler, Josep|d 1935-2022|0 XX1054222", "|a Rilke, Rainer Maria|d 1875-1926 /**/ |a Artysz, Jerzy|e int. /**/ |a Cortese, Paul|e int. /**/ |a Bruach, Agustí|d 1966-|e int. /**/ |a Wort, Frederic|d 1973-|e int."), "")
 #         def test_lat_lng(self):
 #             self.assertEqual(f_lat_lng("|d W0910335|e W0910335|f N0332432|g N0332432|2 geonames"), "91.0335, 33.2432")
 #             self.assertEqual(f_lat_lng("|d W0051240|e W0051240|f N0373555|g N0373555|2 ngn"), "5.124, 37.3555")
@@ -2068,4 +2095,4 @@ def son_serie(value_440: str, value_490: str) -> str:
 #         def test_vid_support(self):
 #             self.assertEqual(vid_support("|a vf*cb|ho|"), "x")
 
-#     unittest.main()
+    unittest.main()

@@ -49,6 +49,7 @@ query_create_per ='''
     t_400,
     t_500,
     t_510,
+    t_663,
     t_670,
     otros_identificadores,
     fecha_nacimiento,
