@@ -727,6 +727,63 @@ def extract_values(dataset:str ,record:dict) -> tuple:
         result.append(record.get("740"))
         result.append(record.get("856"))
 
+        humans = []
+        
+        humans.append(country_of_publication(record.get("008")))
+        humans.append(main_language(record.get("008")))
+        humans.append(other_languages(record.get("041")))
+        humans.append(original_language(record.get("041")))
+        humans.append(publication_date(record.get("008")))
+        humans.append(decade(record.get("008")))
+        humans.append(century(record.get("008")))
+        humans.append(legal_deposit(record.get("017")))
+        humans.append(isbn(record.get("020")))
+        humans.append(other_identifiers(record.get("024")))
+        #numero de control de sistema
+        humans.append(get_single_dollar(record.get("035"), "a"))
+        #cdu
+        humans.append(get_single_dollar(record.get("080"), "a"))
+        humans.append(get_authors(record.get("100"), record.get("700"), record.get("710")))
+        # titulo_normalizado
+        humans.append(get_single_dollar(record.get("130"), "a"))
+        humans.append(mon_title(record.get("245")))
+        humans.append(mon_other_titles(record.get("246"), record.get("740")))
+        humans.append(mon_edition(record.get("250")))
+        humans.append(mon_publication_place(record.get("260"), record.get("264")))
+        humans.append(mon_publisher(record.get("260"), record.get("264")))
+        # extension
+        humans.append(get_single_dollar(record.get("300"), "a"))
+        # otras caracterisitcas fisicas
+        humans.append(get_single_dollar(record.get("300"), "a"))
+        # dimensiones
+        humans.append(get_single_dollar(record.get("300"), "c"))
+        # material_anejo
+        humans.append(get_single_dollar(record.get("300"), "e"))
+        # tipo de contenido
+        humans.append(get_single_dollar(record.get("336"), "a"))
+        # tipo de medio
+        humans.append(get_single_dollar(record.get("337"), "a"))
+        # tipo de soporte
+        humans.append(get_single_dollar(record.get("338"), "a"))
+        # equipo
+        humans.append(get_single_dollar(record.get("508"), "a"))
+        # interpretes
+        humans.append(get_single_dollar(record.get("511"), "a"))
+        # fecha lugar grabación
+        humans.append(get_single_dollar(record.get("518"), "a"))
+        # resumen
+        humans.append(get_single_dollar(record.get("520"), "a"))
+        # público
+        humans.append(get_single_dollar(record.get("521"), "a"))
+        # contenido
+        humans.append(get_single_dollar(record.get("505"), "a"))
+        humans.append(son_serie(record.get("440"), record.get("490")))
+        humans.append(mon_notes(record))
+        humans.append(mon_subject(record, ("600", "610", "611", "630", "650", "651", "653")))
+        humans.append(mon_subject(record, ("655",)))
+        humans.append(url(record.get("856")))
+        result.extend(humans)
+
     elif dataset == "ele":
         result.append(record.get("001")[2:] if record.get("001") else None)
         result.append(record.get("001"))
@@ -984,7 +1041,6 @@ def extract_values(dataset:str ,record:dict) -> tuple:
         
         result.extend(humans)
 
-
     elif dataset == "gra":
         result.append(record.get("001")[2:] if record.get("001") else None)
         result.append(record.get("001"))
@@ -1053,6 +1109,73 @@ def extract_values(dataset:str ,record:dict) -> tuple:
         result.append(record.get("740"))
         result.append(record.get("773"))
         result.append(record.get("856"))
+
+        humans = []
+        # numero de bibliografía nacional
+        humans.append(get_single_dollar(record.get("015"), "a"))
+        humans.append(country_of_publication(record.get("008")))
+        humans.append(main_language(record.get("008")))
+        humans.append(other_languages(record.get("041")))
+        humans.append(original_language(record.get("041")))
+        humans.append(publication_date(record.get("008")))
+        humans.append(decade(record.get("008")))
+        humans.append(century(record.get("008")))
+        # agencia bibliográfica nacional
+        humans.append(get_single_dollar(record.get("016"), "a"))
+        humans.append(legal_deposit(record.get("017")))
+        humans.append(isbn(record.get("020")))
+        # número de editor
+        humans.append(get_multi_dollar(record.get("028"), ("a", "b")))
+        #numero de control de sistema
+        humans.append(get_single_dollar(record.get("035"), "a"))
+        #cdu
+        humans.append(get_single_dollar(record.get("080"), "a"))
+        humans.append(get_authors(record.get("100"), record.get("700"), record.get("710")))
+        # nombre_de_congreso
+        humans.append(get_multi_dollar(record.get("111"), ("a", "c")))
+        # titulo_normalizado
+        humans.append(get_single_dollar(record.get("130"), "a"))
+        # título colectivo
+        humans.append(get_single_dollar(record.get("243"), "a"))
+        humans.append(mon_title(record.get("245")))
+        humans.append(mon_other_titles(record.get("246"), record.get("740")))
+        humans.append(mon_edition(record.get("250")))
+        # datos matemáticos cartográficos
+        humans.append(get_multi_dollar(record.get("255"), ("a", "b", "c")))
+        # caracteristicas del archivo
+        humans.append(get_multi_dollar(record.get("256"), ("a", "6", "7", "8")))
+        humans.append(mon_publication_place(record.get("260"), record.get("264")))
+        humans.append(mon_publisher(record.get("260"), record.get("264")))
+        # extension
+        humans.append(get_single_dollar(record.get("300"), "a"))
+        # otras caracterisitcas fisicas
+        humans.append(get_single_dollar(record.get("300"), "a"))
+        # dimensiones
+        humans.append(get_single_dollar(record.get("300"), "c"))
+        # material_anejo
+        humans.append(get_single_dollar(record.get("300"), "e"))
+        # tipo de contenido
+        humans.append(get_single_dollar(record.get("336"), "a"))
+        # tipo de medio
+        humans.append(get_single_dollar(record.get("337"), "a"))
+        # equipo
+        humans.append(get_single_dollar(record.get("508"), "a"))
+        # interpretes
+        humans.append(get_single_dollar(record.get("511"), "a"))
+        # fecha lugar grabación
+        humans.append(get_single_dollar(record.get("518"), "a"))
+        # resumen
+        humans.append(get_single_dollar(record.get("520"), "a"))
+        # público
+        humans.append(get_single_dollar(record.get("521"), "a"))
+        # contenido
+        humans.append(get_single_dollar(record.get("505"), "a"))
+        humans.append(son_serie(record.get("440"), record.get("490")))
+        humans.append(mon_notes(record))
+        humans.append(mon_subject(record, ("600", "610", "611", "630", "650", "651", "653")))
+        humans.append(mon_subject(record, ("655",)))
+        humans.append(url(record.get("856")))
+        result.extend(humans)
     
     return result
 
@@ -2095,7 +2218,8 @@ def son_serie(value_440: str, value_490: str) -> str:
                 result += d_v
     else:
         d_a = get_single_dollar(value_490, "a")
-        result += d_a
+        if d_a:
+            result += d_a
         d_v = get_single_dollar(value_490, "v")
         if d_v:
             result += d_v
