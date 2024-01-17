@@ -781,10 +781,74 @@ def extract_values(dataset:str ,record:dict) -> tuple:
         result.append(record.get("651"))
         result.append(record.get("653"))
         result.append(record.get("655"))
-        result.append(record.get("700"))
         result.append(record.get("710"))
-        result.append(record.get("740"))
         result.append(record.get("856"))
+
+        humans = []
+
+        # numero de bibliografía nacional
+        humans.append(get_single_dollar(record.get("015"), "a"))
+        humans.append(country_of_publication(record.get("008")))
+        humans.append(main_language(record.get("008")))
+        humans.append(other_languages(record.get("041")))
+        humans.append(original_language(record.get("041")))
+        humans.append(publication_date(record.get("008")))
+        humans.append(decade(record.get("008")))
+        humans.append(century(record.get("008")))
+        humans.append(legal_deposit(record.get("017")))
+        humans.append(isbn(record.get("020")))
+        #numero de control de sistema
+        humans.append(get_single_dollar(record.get("035"), "a"))
+        #cdu
+        humans.append(get_single_dollar(record.get("080"), "a"))
+        humans.append(get_authors(record.get("100"), record.get("700"), record.get("710")))
+        # nombre_de_congreso
+        humans.append(get_multi_dollar(record.get("111"), ("a", "c")))
+        # titulo_normalizado
+        humans.append(get_single_dollar(record.get("130"), "a"))
+        humans.append(mon_title(record.get("245")))
+        humans.append(mon_other_titles(record.get("246"), record.get("740")))
+        humans.append(mon_edition(record.get("250")))
+        # caracteristicas del archivo
+        humans.append(get_multi_dollar(record.get("256"), ("a", "6", "7", "8")))
+        humans.append(mon_publication_place(record.get("260"), record.get("264")))
+        humans.append(mon_publisher(record.get("260"), record.get("264")))
+        # extension
+        humans.append(get_single_dollar(record.get("300"), "a"))
+        # otras caracterisitcas fisicas
+        humans.append(get_single_dollar(record.get("300"), "a"))
+        # dimensiones
+        humans.append(get_single_dollar(record.get("300"), "c"))
+        # material_anejo
+        humans.append(get_single_dollar(record.get("300"), "e"))
+        # tipo de contenido
+        humans.append(get_single_dollar(record.get("336"), "a"))
+        # tipo de medio
+        humans.append(get_single_dollar(record.get("337"), "a"))
+        # tipo de soporte
+        humans.append(get_single_dollar(record.get("338"), "a"))
+        # sonido
+        humans.append(get_multi_dollar(record.get("344"), ("a", "b", "c")))
+        # imagen video
+        humans.append(get_multi_dollar(record.get("345"), ("a", "c", "d")))
+        # equipo
+        humans.append(get_single_dollar(record.get("508"), "a"))
+        # interpretes
+        humans.append(get_single_dollar(record.get("511"), "a"))
+        # fecha lugar grabación
+        humans.append(get_single_dollar(record.get("518"), "a"))
+        # resumen
+        humans.append(get_single_dollar(record.get("520"), "a"))
+        # público
+        humans.append(get_single_dollar(record.get("521"), "a"))
+        # contenido
+        humans.append(get_single_dollar(record.get("505"), "a"))
+        humans.append(son_serie(record.get("440"), record.get("490")))
+        humans.append(mon_notes(record))
+        humans.append(mon_subject(record, ("600", "610", "611", "630", "650", "651", "653")))
+        humans.append(mon_subject(record, ("655",)))
+        humans.append(url(record.get("856")))
+        result.extend(humans)
     
     elif dataset == "son":
         result.append(record.get("001")[2:] if record.get("001") else None)
@@ -875,7 +939,7 @@ def extract_values(dataset:str ,record:dict) -> tuple:
             humans.append(get_single_dollar(record.get("028"), "b"))
 
         humans.append(get_single_dollar(record.get("080"), "a"))
-        humans.append(get_authors(record.get("100"), record.get("700")))
+        humans.append(get_authors(record.get("100"), record.get("700"), record.get("710")))
         humans.append(congress_name(record.get("111")))
         humans.append(mon_title(record.get("245")))
         humans.append(mon_other_titles(record.get("246"), record.get("740")))
@@ -2038,7 +2102,7 @@ def son_serie(value_440: str, value_490: str) -> str:
     return result
 
 @stripper
-def get_authors(value_100:str, value_700:str) -> str:
+def get_authors(value_100:str, value_700:str, value_710:str = None) -> str:
     if not value_100:
         return
     
@@ -2057,9 +2121,26 @@ def get_authors(value_100:str, value_700:str) -> str:
                 pre_700 += f"{d_a} {splitter}"
                 
         pre_700 = pre_700[:-len(splitter)]
-    if value_700:
+        if value_710:
+            d_e = get_single_dollar(value_710, "e")
+            if d_e:
+                return f"{value_100} /**/ {pre_700} /**/ {value_710}"
+
         return f"{value_100} /**/ {pre_700}"
     return value_100
+
+@stripper
+def son_interpetation_media(value: str) -> str:
+    '''382: |a|b|p'''
+    if not value:
+        return
+    result = ""
+    for v in value.split(splitter):
+        a_b_p = get_multi_dollar(v, ("a", "b", "p"), ", ")
+        result += f"{a_b_p} "
+    return result
+
+    
 
 
 if __name__ == "__main__":
@@ -2069,7 +2150,9 @@ if __name__ == "__main__":
         def test_son_libretto_language(self):
             self.assertEqual(son_libretto_language("|d ger|e spa|e eng|e ger|g spa|g eng"), "español")
         def test_get_authors(self):
-            self.assertEqual(get_authors("|a Soler, Josep|d 1935-2022|0 XX1054222", "|a Rilke, Rainer Maria|d 1875-1926 /**/ |a Artysz, Jerzy|e int. /**/ |a Cortese, Paul|e int. /**/ |a Bruach, Agustí|d 1966-|e int. /**/ |a Wort, Frederic|d 1973-|e int."), "")
+            self.assertEqual(get_authors("|a Soler, Josep|d 1935-2022|0 XX1054222", "|a Rilke, Rainer Maria|d 1875-1926 /**/ |a Artysz, Jerzy|e int. /**/ |a Cortese, Paul|e int. /**/ |a Bruach, Agustí|d 1966-|e int. /**/ |a Wort, Frederic|d 1973-|e int."), "Soler, Josep, ( 1935-2022) /**/ Rilke, Rainer Maria, ( 1875-1926)  /**/ Artysz, Jerzy( int.)  /**/ Cortese, Paul( int.)  /**/ Bruach, Agustí, ( 1966-)( int.)  /**/ Wort, Frederic, ( 1973-)( int.)")
+        def test_son_interpetation_media(self):
+            self.assertEqual(son_interpetation_media("|a orquesta|2 tmibne /**/ |b contralto|n 1|a orquesta|2 tmibne /**/ |b soprano|n 1|b contralto|n 1|a voces mixtas|v SATB|a orquesta|2 tmibne"), "orquesta orquesta, contralto voces mixtas, soprano")
 #         def test_lat_lng(self):
 #             self.assertEqual(f_lat_lng("|d W0910335|e W0910335|f N0332432|g N0332432|2 geonames"), "91.0335, 33.2432")
 #             self.assertEqual(f_lat_lng("|d W0051240|e W0051240|f N0373555|g N0373555|2 ngn"), "5.124, 37.3555")

@@ -113,6 +113,10 @@ if __name__ == "__main__":
         print("2. Dataset")
         print("Q. Salir")
         if user == "1":
+            print("Se generarán todos los conjuntos de datos\n ¿Está seguro de que quiere proceder? (Y/N)")
+            user = input(": ")
+            if user.lower() == "n":
+                continue
             system("clear")
             con = sqlite3.connect("bne.db")
             cur.execute(create_statements["queries"])
