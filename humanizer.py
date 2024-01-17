@@ -873,7 +873,7 @@ def extract_values(dataset:str ,record:dict) -> tuple:
         # extension
         humans.append(get_single_dollar(record.get("300"), "a"))
         # otras caracterisitcas fisicas
-        humans.append(get_single_dollar(record.get("300"), "a"))
+        humans.append(get_single_dollar(record.get("300"), "b"))
         # dimensiones
         humans.append(get_single_dollar(record.get("300"), "c"))
         # material_anejo
