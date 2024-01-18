@@ -683,7 +683,6 @@ def extract_values(dataset:str ,record:dict) -> tuple:
     elif dataset == "par":
         result.append(record.get("001")[2:] if record.get("001") else None)
         result.append(record.get("001"))
-        result.append(record.get("007"))
         result.append(record.get("008"))
         result.append(record.get("015"))
         result.append(record.get("016"))
@@ -698,11 +697,14 @@ def extract_values(dataset:str ,record:dict) -> tuple:
         result.append(record.get("100"))
         result.append(record.get("245"))
         result.append(record.get("246"))
+        result.append(record.get("254"))
         result.append(record.get("260"))
         result.append(record.get("264"))
         result.append(record.get("300"))
         result.append(record.get("336"))
         result.append(record.get("337"))
+        result.append(record.get("348"))
+        result.append(record.get("382"))
         result.append(record.get("440"))
         result.append(record.get("490"))
         result.append(record.get("500"))
@@ -767,6 +769,12 @@ def extract_values(dataset:str ,record:dict) -> tuple:
         humans.append(get_single_dollar(record.get("338"), "a"))
         # equipo
         humans.append(get_single_dollar(record.get("508"), "a"))
+        # formato_partitura
+        humans.append(get_single_dollar(record.get("348"), "a"))
+        # forma_partitura
+        humans.append(get_single_dollar(record.get("348"), "c"))
+        #medio interpretacion
+        humans.append(son_interpetation_media(record.get("382")))
         # interpretes
         humans.append(get_single_dollar(record.get("511"), "a"))
         # fecha lugar grabación
@@ -1022,7 +1030,7 @@ def extract_values(dataset:str ,record:dict) -> tuple:
         # sonido
         humans.append(get_multi_dollar(record.get("344"), ("a", "b", "c", "d", "g"), ", "))
         # medio interpretación
-        humans.append(get_single_dollar(record.get("382"), "a"))
+        humans.append(get_multi_dollar(record.get("382"), ("a", "b", "p") + f"{'(' + get_single_dollar(record.get('382'), 'v') + ')' if get_single_dollar(record.get('382'), 'v¡') else ''}"))
         # equipo
         humans.append(get_single_dollar(record.get("508"), "a"))
         # interpretes
@@ -2255,16 +2263,18 @@ def get_authors(value_100:str, value_700:str, value_710:str = None) -> str:
 
 @stripper
 def son_interpetation_media(value: str) -> str:
-    '''382: |a|b|p'''
+    '''382: |a|b|p(v)'''
     if not value:
         return
     result = ""
     for v in value.split(splitter):
         a_b_p = get_multi_dollar(v, ("a", "b", "p"), ", ")
         result += f"{a_b_p} "
+        d_v = get_single_dollar(v, "v")
+        if d_v:
+            result += f"({d_v})"
     return result
 
-    
 
 
 if __name__ == "__main__":
