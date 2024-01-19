@@ -775,6 +775,7 @@ def extract_values(dataset:str ,record:dict) -> tuple:
         humans.append(get_single_dollar(record.get("348"), "c"))
         #medio interpretacion
         humans.append(son_interpetation_media(record.get("382")))
+        # humans.append(get_single_dollar(record.get("508"), "a"))
         # interpretes
         humans.append(get_single_dollar(record.get("511"), "a"))
         # fecha lugar grabación
@@ -1030,7 +1031,7 @@ def extract_values(dataset:str ,record:dict) -> tuple:
         # sonido
         humans.append(get_multi_dollar(record.get("344"), ("a", "b", "c", "d", "g"), ", "))
         # medio interpretación
-        humans.append(get_multi_dollar(record.get("382"), ("a", "b", "p") + f"{'(' + get_single_dollar(record.get('382'), 'v') + ')' if get_single_dollar(record.get('382'), 'v¡') else ''}"))
+        humans.append(son_interpetation_media(record.get("382")))
         # equipo
         humans.append(get_single_dollar(record.get("508"), "a"))
         # interpretes

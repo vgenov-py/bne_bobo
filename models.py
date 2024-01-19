@@ -242,8 +242,8 @@ query_create_moa = f'''
     tema,
     genero_forma,
     lugar_relacionado,
-    tipo_de_documento
-    url,
+    tipo_de_documento,
+    url
     );
 '''
 
