@@ -392,7 +392,7 @@ def extract_values(dataset:str ,record:dict) -> tuple:
         '''Lengua:'''
         result.append(get_single_dollar(record.get("377"), "l"))
         '''otros nombres'''
-        result.append(ent_entity_name(record.get("410")))
+        result.append(per_other_names(record.get("410")))
         '''Persona relacionada:'''
         result.append(per_person_name(record.get("500")))
         '''Grupo o entidad relacionada:'''
