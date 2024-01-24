@@ -48,6 +48,8 @@ class Test_humanizer(unittest.TestCase):
     #     self.assertEqual(get_authors("|a Soler, Josep|d 1935-2022|0 XX1054222", "|a Rilke, Rainer Maria|d 1875-1926 /**/ |a Artysz, Jerzy|e int. /**/ |a Cortese, Paul|e int. /**/ |a Bruach, Agustí|d 1966-|e int. /**/ |a Wort, Frederic|d 1973-|e int."), "Soler, Josep, ( 1935-2022) /**/ Rilke, Rainer Maria, ( 1875-1926)  /**/ Artysz, Jerzy( int.)  /**/ Cortese, Paul( int.)  /**/ Bruach, Agustí, ( 1966-)( int.)  /**/ Wort, Frederic, ( 1973-)( int.)")
     def test_son_interpetation_media(self):
         self.assertEqual(son_interpetation_media("|a orquesta|2 tmibne /**/ |b contralto|n 1|a orquesta|2 tmibne /**/ |b soprano|n 1|b contralto|n 1|a voces mixtas|v SATB|a orquesta|2 tmibne"), "orquesta orquesta, contralto voces mixtas, soprano")
+        # self.assertEqual(son_interpetation_media("|a orquesta|a tmibne"), "orquesta orquesta, contralto voces mixtas, soprano")
+        # self.assertEqual(get_repeated_dollar("|a orquesta|a tmibne", "a"), "x")
 
 if __name__ == "__main__":
     unittest.main()

@@ -1,6 +1,7 @@
 import sqlite3
 import re
 from uuid import uuid4
+from functools import reduce
 
 con = sqlite3.connect("bne.db")
 cur = con.cursor()
@@ -1201,7 +1202,17 @@ def get_single_dollar(value:str, dollar: str) -> str:
              for match in value.groups():
                   if match:
                        return match
-    
+
+def get_repeated_dollar(value:str, dollar: str) -> str:
+    if not value:
+        return None
+    result = ""
+    pattern = "(?<=\|dollar\s{1})\w{1,} \w{1,} \w{1,}|(?<=\|dollar\s{1})\w{1,} \w{1,}|(?<=\|dollar\s{1})\w{1,}"
+    pattern = pattern.replace("dollar", dollar)
+    for v in re.findall(pattern, value):
+        if v:
+            result += f"{v} "
+    return result
 @stripper
 def dollar_parser(value: str) -> str:
     if not value:
@@ -2032,6 +2043,18 @@ def get_multi_dollar(value: str, dollars: tuple, separator: str = ", ") -> str:
     return result[:len(result) - len(separator)]
 
 @stripper
+def get_multi_dollar_2(value: str, dollars: tuple, separator: str = ", ") -> str:
+    if not value:
+        return
+    result = ""
+    for d in dollars:
+        d = get_repeated_dollar(value, d)
+        if d:
+            d = d.strip()
+            result += f"{d}{separator}"
+    return result[:len(result) - len(separator)]
+
+@stripper
 def notes(values: list) -> str:
     result = ""
     for value in values:
@@ -2269,13 +2292,27 @@ def son_interpetation_media(value: str) -> str:
         return
     result = ""
     for v in value.split(splitter):
-        a_b_p = get_multi_dollar(v, ("a", "b", "p"), ", ")
+        a_b_p = get_multi_dollar_2(v, ("a", "b", "p"), ", ")
         result += f"{a_b_p} "
         d_v = get_single_dollar(v, "v")
         if d_v:
             result += f"({d_v})"
     return result
 
+@stripper
+def son_interpetation_media(value: str) -> str:
+    '''382: |a|b|p(v)'''
+    if not value:
+        return
+    result = ""
+    for d in ("a", "b", "p", "v"):
+        for v in value.split(splitter):
+            pre = get_repeated_dollar(v, d)
+            if d == "v" and pre:
+                result += f"({pre})"
+            elif pre:
+                result += pre
+    return result
 
 
 if __name__ == "__main__":

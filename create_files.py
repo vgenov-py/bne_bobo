@@ -111,9 +111,10 @@ def export_mrc_xml(dataset:str) -> None:
 if __name__ == "__main__":
     from time import perf_counter
     s = perf_counter()
-    export_csv("geo")
-    export_txt("geo")
-    export_json("geo")
-    export_xml("geo")
-    export_mrc_xml("geo")
+    dataset = input("DATASET: ")
+    export_csv(dataset)
+    export_txt(dataset)
+    export_json(dataset)
+    export_xml(dataset)
+    export_mrc_xml(dataset)
     print(perf_counter() - s)

@@ -7,7 +7,11 @@ datasets = {
     "moa": "MONOANTIGU", 
     "ent": "ENTIDAD", 
     "ser": "SERIADA", 
-    "mss": "MANUSCRITO"
+    "mss": "MANUSCRITO",
+    "ele": "RECELECTRO",
+    "par": "MUSICAESC",
+    "gra": "GRAFPRO",
+    "son":"GRABSONORA"
 }
 
 urls = (
