@@ -83,7 +83,77 @@ def export_xml(dataset:str) -> None:
         file.write(data)
     with ZipFile(file_name.replace("xml", "zip"), 'w', zipfile.ZIP_DEFLATED) as myzip:
         myzip.write(file_name)
-    
+
+def export_xml_2(dataset: str) -> None:
+    print(f"Exportando {dataset} en XML")
+    cap_record = 200000
+    file_name = f"{datasets[dataset].lower()}-XML.xml"
+    system(f"rm {file_name}")
+    headers = human_fields(dataset)
+    query = f"SELECT {headers} FROM {dataset};"
+    cur.execute(query)
+    with open(file_name, "w", encoding="utf-8") as file:
+        file.write('''<?xml version="1.0" encoding="UTF-8"?>\n<list>\n''')
+    headers = headers.split(",")
+    while True:
+        try:
+            data = cur.fetchmany(cap_record)
+            if not data:
+                break
+            else:
+                for row in data:
+                    to_add = "    <item>\n"
+                    for i, dc in enumerate(row):
+                        header = headers[i].strip()
+                        if dc:
+                            to_add += f"            <{header}>{dc}</{header}>\n"
+                        else:
+                            continue
+                    to_add += "    </item>\n"
+                    with open(file_name, "a", encoding="utf-8") as file:
+                        file.write(to_add)
+        except:
+            raise
+    with open(file_name, "a", encoding="utf-8") as file:
+        file.write("</list>\n")
+    with ZipFile(file_name.replace("xml", "zip"), 'w', zipfile.ZIP_DEFLATED) as myzip:
+        myzip.write(file_name)
+
+def export_mrc_xml_2(dataset: str) -> None:
+    print(f"Exportando {dataset} en MRC XML")
+    cap_record = 200000
+    file_name = f"{datasets[dataset].lower()}-MARCXML.xml"
+    system(f"rm {file_name}")
+    headers = marc_fields(dataset)
+    query = f"SELECT {headers} FROM {dataset};"
+    cur.execute(query)
+    with open(file_name, "w", encoding="utf-8") as file:
+        file.write('''<?xml version="1.0" encoding="UTF-8"?>\n<list>\n''')
+    headers = headers.split(",")
+    while True:
+        try:
+            data = cur.fetchmany(cap_record)
+            if not data:
+                break
+            else:
+                for row in data:
+                    to_add = "    <item>\n"
+                    for i, dc in enumerate(row):
+                        header = headers[i].strip()
+                        if dc:
+                            to_add += f"            <{header}>{dc}</{header}>\n"
+                        else:
+                            continue
+                    to_add += "    </item>\n"
+                    with open(file_name, "a", encoding="utf-8") as file:
+                        file.write(to_add)
+        except:
+            raise
+    with open(file_name, "a", encoding="utf-8") as file:
+        file.write("</list>\n")
+    with ZipFile(file_name.replace("xml", "zip"), 'w', zipfile.ZIP_DEFLATED) as myzip:
+        myzip.write(file_name)
+
 def export_mrc_xml(dataset:str) -> None:
     print(f"Exportando {dataset} en MARC XML")
     headers = marc_fields(dataset)
@@ -115,6 +185,6 @@ if __name__ == "__main__":
     export_csv(dataset)
     export_txt(dataset)
     export_json(dataset)
-    export_xml(dataset)
-    export_mrc_xml(dataset)
+    export_xml_2(dataset)
+    export_mrc_xml_2(dataset) # \\bne.local\bns02\SGA\BNELAB\Proyectos\Datos-Reutilización
     print(perf_counter() - s)
