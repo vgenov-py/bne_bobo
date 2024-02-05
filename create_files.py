@@ -5,7 +5,7 @@ import csv
 from zipfile import ZipFile
 import zipfile
 
-con = sqlite3.connect("bne.db")
+con = sqlite3.connect("dbs/bne.db")
 cur = con.cursor()
 def human_fields(dataset) -> list:
     result = ""
@@ -178,7 +178,7 @@ def export_mrc_xml(dataset:str) -> None:
     with ZipFile(file_name.replace("xml", "zip"), 'w', zipfile.ZIP_DEFLATED) as myzip:
         myzip.write(file_name)
 
-if __name__ == "__main__":
+if __name__:
     from time import perf_counter
     s = perf_counter()
     dataset = input("DATASET: ")

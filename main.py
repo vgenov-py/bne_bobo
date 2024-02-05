@@ -47,12 +47,12 @@ def get_files(urls):
             print(f"Accediendo a {url.split('/')[-1]}")
             res = req.get(url)
             z_file_name = re.findall("\w{1,}\.zip", res.url)[0]
-            z_file = open(z_file_name, "wb")
+            z_file = open(f"zips/{z_file_name}", "wb")
             print(f"Escribiendo {z_file_name}")
             z_file.write(res.content)
             z_file.close()
-            z_file = zipfile.ZipFile(z_file_name, "r")
-            z_file.extractall()
+            z_file = zipfile.ZipFile(f"zips/{z_file_name}", "r")
+            z_file.extractall("mrcs")
             z_file.close()
         tuple(executor.map(a,urls))
 
@@ -64,7 +64,7 @@ def insertion(datasets):
         if dataset not in datasets:
             continue
         dataset = dataset[:3]
-        with open(f"{mrc_file}.mrc", "rb") as file:
+        with open(f"mrcs/{mrc_file}.mrc", "rb") as file:
             reader = MARCReader(file, force_utf8=True)
             cur.execute(create_statements[f"{dataset}"])
             con.commit()
@@ -111,14 +111,15 @@ if __name__ == "__main__":
     while user.lower() != "q":
         print("1. Todos")
         print("2. Dataset")
+        print("3. Crear ficheros")
         print("Q. Salir")
         if user == "1":
+            system("clear")
             print("Se generarán todos los conjuntos de datos\n ¿Está seguro de que quiere proceder? (Y/N)")
             user = input(": ")
             if user.lower() == "n":
                 continue
-            system("clear")
-            con = sqlite3.connect("bne.db")
+            con = sqlite3.connect("dbs/bne.db")
             cur.execute(create_statements["queries"])
             cur = con.cursor()
             get_files(urls)
@@ -130,13 +131,16 @@ if __name__ == "__main__":
                 print(f"{i+1}. {dataset}")
             user = int(input(": ")) - 1
             dataset = list(datasets.keys())[user]
-            con = sqlite3.connect(f"{dataset[:3]}.db")
+            con = sqlite3.connect(f"dbs/{dataset[:3]}.db")
             cur.execute(create_statements["queries"])
             cur = con.cursor()
             get_files((urls[user],))
             to_insert = {dataset: list(datasets.values())[user]}
             insertion(to_insert)
             print("Datos ingresados")
+        elif user == "3":
+            system("clear")
+            import create_files
         user = input(": ")
 # system("rm -r *.mrc && rm -r *.zip")
 print(time.perf_counter() - real_s)
