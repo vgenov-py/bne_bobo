@@ -5,8 +5,10 @@ import csv
 from zipfile import ZipFile
 import zipfile
 
+db_path = "dbs/bne.db"
 con = sqlite3.connect("dbs/bne.db")
 cur = con.cursor()
+
 def human_fields(dataset) -> list:
     result = ""
     fields = tuple(filter(lambda f: not f.startswith("t_"), (row[1] for row in cur.execute(f"pragma table_info({dataset});"))))
@@ -27,9 +29,9 @@ sqlite3 bne.db -json " {self.query(count=False, limit=False)} " > {file_name}.js
 
 def export_csv(dataset:str) -> None:
     print(f"Exportando {dataset} en CSV-UTF8")
-    file_name = f"{datasets[dataset].lower()}-UTF8.csv"
+    file_name = f"{dataset}/{datasets[dataset].lower()}-UTF8.csv"
     query = f"SELECT {human_fields(dataset)} FROM {dataset};"
-    command = f'''sqlite3 bne.db -header -csv -separator ";" " {query} " > {file_name}'''
+    command = f'''sqlite3 {db_path} -header -csv -separator ";" " {query} " > {file_name}'''
     system(command)
     print(f"Exportando {dataset} en CSV-CP1252")
     system(f"cp {file_name} ./{file_name[:-8]}CP1252.csv")
@@ -44,50 +46,26 @@ def export_csv(dataset:str) -> None:
 
 def export_txt(dataset:str) -> None:
     print(f"Exportando {dataset} en TXT-UTF8")
-    file_name = f"{datasets[dataset].lower()}-TXT.txt"
+    file_name = f"{dataset}/{datasets[dataset].lower()}-TXT.txt"
     query = f"SELECT {human_fields(dataset)} FROM {dataset};"
-    command = f'''sqlite3 bne.db -header -csv -separator "|" " {query} " > {file_name}'''
+    command = f'''sqlite3 {db_path} -header -csv -separator "|" " {query} " > {file_name}'''
     system(command)
     with ZipFile(file_name.replace("txt", "zip"), 'w', zipfile.ZIP_DEFLATED) as myzip:
         myzip.write(file_name)
 
 def export_json(dataset:str) -> None:
     print(f"Exportando {dataset} en JSON")
-    file_name = f"{datasets[dataset].lower()}-JSON.json"
+    file_name = f"{dataset}/{datasets[dataset].lower()}-JSON.json"
     query = f"SELECT {human_fields(dataset)} FROM {dataset};"
-    command = f'''sqlite3 bne.db -json " {query} " > {file_name}'''
+    command = f'''sqlite3 {db_path} -json " {query} " > {file_name}'''
     system(command)
     with ZipFile(file_name.replace("json", "zip"), 'w', zipfile.ZIP_DEFLATED) as myzip:
-        myzip.write(file_name)
-
-def export_xml(dataset:str) -> None:
-    print(f"Exportando {dataset} en XML")
-    file = open(f"{datasets[dataset].lower()}-UTF8.csv")
-    csv_reader = csv.reader(file, delimiter=";")
-    headers = next(csv_reader)
-    data = '''<?xml version="1.0" encoding="UTF-8"?>\n<list>\n'''
-    for row in csv_reader:
-        to_add = "    <item>\n"
-        for i, dc in enumerate(row):
-            header = headers[i]
-            if dc:
-                to_add += f"            <{header}>{dc}</{header}>\n"
-            else:
-                continue
-        to_add += "    </item>\n"
-        data += to_add
-    data += "</list>\n"
-    file.close()
-    file_name = f"{datasets[dataset].lower()}-XML.xml"
-    with open(file_name, "w", encoding="utf-8") as file:
-        file.write(data)
-    with ZipFile(file_name.replace("xml", "zip"), 'w', zipfile.ZIP_DEFLATED) as myzip:
         myzip.write(file_name)
 
 def export_xml_2(dataset: str) -> None:
     print(f"Exportando {dataset} en XML")
     cap_record = 200000
-    file_name = f"{datasets[dataset].lower()}-XML.xml"
+    file_name = f"{dataset}/{datasets[dataset].lower()}-XML.xml"
     system(f"rm {file_name}")
     headers = human_fields(dataset)
     query = f"SELECT {headers} FROM {dataset};"
@@ -122,7 +100,7 @@ def export_xml_2(dataset: str) -> None:
 def export_mrc_xml_2(dataset: str) -> None:
     print(f"Exportando {dataset} en MRC XML")
     cap_record = 200000
-    file_name = f"{datasets[dataset].lower()}-MARCXML.xml"
+    file_name = f"{dataset}/{datasets[dataset].lower()}-MARCXML.xml"
     system(f"rm {file_name}")
     headers = marc_fields(dataset)
     query = f"SELECT {headers} FROM {dataset};"
@@ -154,37 +132,34 @@ def export_mrc_xml_2(dataset: str) -> None:
     with ZipFile(file_name.replace("xml", "zip"), 'w', zipfile.ZIP_DEFLATED) as myzip:
         myzip.write(file_name)
 
-def export_mrc_xml(dataset:str) -> None:
-    print(f"Exportando {dataset} en MARC XML")
-    headers = marc_fields(dataset)
-    query = f"SELECT {headers} FROM {dataset};"
-    headers = headers.split(",")
-    data = cur.execute(query)
-    result = '''<?xml version="1.0" encoding="UTF-8"?>\n<list>\n'''
-    for row in data:
-        to_add = "    <item>\n"
-        for i, dc in enumerate(row):
-            header = headers[i]
-            if dc:
-                to_add += f"            <{header}>{dc}</{header}>\n"
-            else:
-                continue
-        to_add += "    </item>\n"
-        result += to_add
-    result += "</list>\n"
-    file_name = f"{datasets[dataset].lower()}-MARCXML.xml"
-    with open(f"{datasets[dataset].lower()}-MARCXML.xml", "w", encoding="utf-8") as file:
-        file.write(result)
-    with ZipFile(file_name.replace("xml", "zip"), 'w', zipfile.ZIP_DEFLATED) as myzip:
-        myzip.write(file_name)
-
 if __name__:
     from time import perf_counter
     s = perf_counter()
-    dataset = input("DATASET: ")
-    export_csv(dataset)
-    export_txt(dataset)
-    export_json(dataset)
-    export_xml_2(dataset)
-    export_mrc_xml_2(dataset) # \\bne.local\bns02\SGA\BNELAB\Proyectos\Datos-Reutilización
-    print(perf_counter() - s)
+    print('''
+        1. Crear todos los ficheros
+        2. Crear por dataset
+        ''')
+    user = input(": ")
+    if user == "1":
+        for dataset in datasets.keys():
+            try:
+                system(f"mkdir {dataset}")
+            except:
+                print("Directorio ya creado")
+            export_csv(dataset)
+            export_txt(dataset)
+            export_json(dataset)
+            export_xml_2(dataset)
+            export_mrc_xml_2(dataset)
+    elif user == "2": 
+        dataset = input("DATASET: ")
+        try:
+                system(f"mkdir {dataset}")
+        except:
+            print("Directorio ya creado")
+        export_csv(dataset)
+        export_txt(dataset)
+        export_json(dataset)
+        export_xml_2(dataset)
+        export_mrc_xml_2(dataset) # \\bne.local\bns02\SGA\BNELAB\Proyectos\Datos-Reutilización
+    # print(perf_counter() - s)

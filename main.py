@@ -143,6 +143,7 @@ if __name__ == "__main__":
             if "bne.db" not in listdir("dbs"):
                 print("¡La base de datos no ha sido creada!")
                 print("Ejecutar la opción 1 de éste programa")
+                user = input(": ")
                 continue
             import create_files
         user = input(": ")
