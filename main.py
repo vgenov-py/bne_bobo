@@ -6,7 +6,7 @@ from models import create_statements
 import time
 from humanizer import *
 import concurrent.futures
-from os import system
+from os import system, listdir
 
 s = time.perf_counter()
 real_s = s
@@ -140,6 +140,10 @@ if __name__ == "__main__":
             print("Datos ingresados")
         elif user == "3":
             system("clear")
+            if "bne.db" not in listdir("dbs"):
+                print("¡La base de datos no ha sido creada!")
+                print("Ejecutar la opción 1 de éste programa")
+                continue
             import create_files
         user = input(": ")
 # system("rm -r *.mrc && rm -r *.zip")
