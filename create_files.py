@@ -1,28 +1,12 @@
 from os import system
-from constants import datasets
 import sqlite3
 import csv
 from zipfile import ZipFile
 import zipfile
+from constants import *
 
-db_path = "dbs/bne.db"
 con = sqlite3.connect("dbs/bne.db")
 cur = con.cursor()
-
-file_names = {
-    "son": "grabsonoras",
-    "gra": "grafnoproyectables", 
-    "mss": "manuscritos",
-    "moa": "monoantiguas",
-    "mon": "monomodernas",
-    "par": "musicaescrita",
-    "ele": "recelectronicos",
-    "ser": "seriadas",
-    "vid": "videos",
-    "geo": "geografico",
-    "ent": "entidad",
-    "per": "persona"
-}
 
 def human_fields(dataset) -> list:
     result = ""
