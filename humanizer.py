@@ -3,7 +3,7 @@ import re
 from uuid import uuid4
 from functools import reduce
 
-con = sqlite3.connect("bne.db")
+con = sqlite3.connect("dbs/bne.db")
 cur = con.cursor()
 
 def marc_fields(dataset) -> list:

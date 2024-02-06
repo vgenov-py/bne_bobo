@@ -8,6 +8,8 @@ from humanizer import *
 import concurrent.futures
 from os import system, listdir
 
+db_path = "dbs/bne.db"
+
 s = time.perf_counter()
 real_s = s
 datasets = {
@@ -34,12 +36,12 @@ urls = (
     "https://www.bne.es/redBNE/SuministroRegistros/Bibliograficos/VIDEO.zip",
     "https://www.bne.es/redBNE/SuministroRegistros/Bibliograficos/MUSICAESC.zip",
     "https://www.bne.es/redBNE/SuministroRegistros/Autoridades/GEOGRAFICO.zip",
-    "https://www.bne.es/redBNE/SuministroRegistros/Bibliograficos/MONOMODERN.zip",
-    "https://www.bne.es/redBNE/SuministroRegistros/Bibliograficos/MANUSCRITO.zip",
     "https://www.bne.es/redBNE/SuministroRegistros/Autoridades/PERSONA.zip",
+    "https://www.bne.es/redBNE/SuministroRegistros/Bibliograficos/MONOMODERN.zip",
     "https://www.bne.es/redBNE/SuministroRegistros/Autoridades/ENTIDAD.zip",
     "https://www.bne.es/redBNE/SuministroRegistros/Bibliograficos/SERIADA.zip",
     "https://www.bne.es/redBNE/SuministroRegistros/Bibliograficos/MONOANTIGU.zip"
+    "https://www.bne.es/redBNE/SuministroRegistros/Bibliograficos/MANUSCRITO.zip",
 )
 def get_files(urls):
     with concurrent.futures.ThreadPoolExecutor() as executor:
@@ -119,6 +121,10 @@ if __name__ == "__main__":
             user = input(": ")
             if user.lower() == "n":
                 continue
+            try:
+                system(f"rm {db_path}")
+            except:
+                print("Desestimar éste mensaje")
             con = sqlite3.connect("dbs/bne.db")
             cur.execute(create_statements["queries"])
             cur = con.cursor()
@@ -131,6 +137,10 @@ if __name__ == "__main__":
                 print(f"{i+1}. {dataset}")
             user = int(input(": ")) - 1
             dataset = list(datasets.keys())[user]
+            try:
+                system(f"rm dbs/{dataset}")
+            except:
+                print("Desestimar éste mensaje")
             con = sqlite3.connect(f"dbs/{dataset[:3]}.db")
             cur.execute(create_statements["queries"])
             cur = con.cursor()
