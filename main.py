@@ -1,3 +1,6 @@
+from os import system, listdir
+if "dbs" not in listdir("./"):
+    import init
 from pymarc import MARCReader
 import zipfile
 import sqlite3
@@ -6,7 +9,6 @@ from models import create_statements
 import time
 from humanizer import *
 import concurrent.futures
-from os import system, listdir
 from constants import *
 
 s = time.perf_counter()
