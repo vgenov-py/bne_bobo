@@ -164,6 +164,7 @@ if __name__:
     user = input(": ")
     if user == "1":
         for dataset in datasets.keys():
+            dataset = dataset[:3]
             try:
                 system(f"mkdir {dataset}")
             except:
@@ -171,8 +172,7 @@ if __name__:
             export_csv(dataset)
             export_txt(dataset)
             export_json(dataset)
-            export_xml(dataset)
-            export_mrc_xml(dataset)
+            export_xml_2(dataset)
     elif user == "2": 
         dataset = input("DATASET: ")
         try:

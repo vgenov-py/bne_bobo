@@ -110,7 +110,6 @@ if __name__ == "__main__":
                 system(f"rm dbs/{dataset}")
             except:
                 print("Desestimar éste mensaje")
-            con = sqlite3.connect(f"dbs/{dataset[:3]}.db")
             con = sqlite3.connect(db_path)
             cur.execute(create_statements["queries"])
             cur = con.cursor()

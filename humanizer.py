@@ -418,6 +418,7 @@ def extract_values(dataset:str ,record:dict) -> tuple:
     elif dataset == "ser":
         result.append(record.get("001")[2:] if record.get("001") else None)
         result.append(record.get("001"))
+        result.append(record.get("007"))
         result.append(record.get("008"))
         result.append(record.get("017"))
         result.append(record.get("022"))
@@ -465,28 +466,40 @@ def extract_values(dataset:str ,record:dict) -> tuple:
         humans.append(decade(record.get("008")))
         humans.append(century(record.get("008")))
         humans.append(legal_deposit(record.get("017")))
-        humans.append(get_single_dollar(record.get("022"), "a"))
+        humans.append(get_single_dollar(record.get("022"), "a")) # issn
         humans.append(isbn(record.get("024"))) # NIPO
-        humans.append(get_single_dollar(record.get("080"), "a"))
+        humans.append(get_single_dollar(record.get("080"), "a")) # CDU
         humans.append(mon_authors(record.get("100"), record.get("700")))
         humans.append(ser_key_title(record.get("222")))
         humans.append(mon_title(record.get("245")))
+        # mención de autores
         humans.append(get_single_dollar(record.get("245"), "c"))
         humans.append(mon_other_titles(record.get("246"), record.get("740")))
         humans.append(mon_publication_place(record.get("260"), record.get("264")))
         humans.append(mon_publisher(record.get("260"), record.get("264")))
+        # extension
         humans.append(get_single_dollar(record.get("300"), "a"))
+        # otras características físicas
         humans.append(get_single_dollar(record.get("300"), "b"))
+        # dimensiones
         humans.append(get_single_dollar(record.get("300"), "c"))
+        # material anejo
         humans.append(get_single_dollar(record.get("300"), "e"))
+        # periocidad
         humans.append(get_single_dollar(record.get("310"), "a"))
+        # fechas y numeración
         humans.append(get_single_dollar(record.get("362"), "a"))
+        # serie
         humans.append(mon_serie(record.get("440"), record.get("490")))
+        # nota de contenido
         humans.append(get_single_dollar(record.get("505"), "a"))
+
         humans.append(mon_notes(record))
+        # procedencia
         humans.append(get_single_dollar(record.get("561"), "a"))
+        
         humans.append(mon_subject(record, ("600", "610", "611", "630", "650", "651", "653")))
-        humans.append(mon_subject(record, ("655")))
+        # humans.append(mon_subject(record, ("655")))
         humans.append(url(record.get("856")))
 
         result += humans

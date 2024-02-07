@@ -400,6 +400,7 @@ query_create_ser ='''
     CREATE VIRTUAL TABLE IF NOT EXISTS ser USING FTS5(
         id,
         t_001,
+        t_007,
         t_008,
         t_017,
         t_022,
@@ -465,7 +466,6 @@ query_create_ser ='''
         notas,
         procedencia,
         tema,
-        genero_forma,
         url
     );
 '''
