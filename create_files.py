@@ -1,4 +1,4 @@
-from os import system
+from os import system, listdir
 import sqlite3
 import csv
 from zipfile import ZipFile
@@ -165,20 +165,16 @@ if __name__:
     if user == "1":
         for dataset in datasets.keys():
             dataset = dataset[:3]
-            try:
+            if dataset not in listdir("./"):
                 system(f"mkdir {dataset}")
-            except:
-                print("Directorio ya creado")
             export_csv(dataset)
             export_txt(dataset)
             export_json(dataset)
             export_xml_2(dataset)
     elif user == "2": 
         dataset = input("DATASET: ")
-        try:
-                system(f"mkdir {dataset}")
-        except:
-            print("Directorio ya creado")
+        if dataset not in listdir("./"):
+            system(f"mkdir {dataset}")
         export_csv(dataset)
         export_txt(dataset)
         export_json(dataset)
