@@ -84,7 +84,7 @@ def extract_values(dataset:str ,record:dict) -> tuple:
         # otros_identificadores
         result.append(other_identifiers(record.get("024")))
         # fecha de nacimiento
-        result.append(get_single_dollar(record.get("046"), "f"))
+        result.append(get_single_dollar(record.get("046"), "f")[1:] if get_single_dollar(record.get("046"), "f") else None)
         # fecha de muerte
         result.append(get_single_dollar(record.get("046"), "g"))
         # nombre de persona
