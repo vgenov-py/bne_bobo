@@ -15,6 +15,9 @@ s = time.perf_counter()
 real_s = s
 
 def get_files(urls):
+    '''
+    Gracias a ésta función podemos descargar todos los conjuntos en paralelo para su posterior procesado e inserción a la DB
+    '''
     with concurrent.futures.ThreadPoolExecutor() as executor:
         def a(url):
             print(f"Accediendo a {url.split('/')[-1]}")
@@ -43,8 +46,9 @@ def insertion(datasets):
             con.commit()
             mf = marc_fields(dataset)
             def insert(data):
+                '''Ésta función inserta todos los registros en un determinado dataset'''
                 counter = create_statements[f"{dataset}"].count("\n") -3
-                query = f'''insert or ignore into {dataset} values ({'?, '*counter})'''
+                query = f'''insert or ignore into {dataset} values ({'?, '*counter})''' # Es importante que se mantenga el formato de un campo por línea debido a ésta función, para evitar utilizar pragma table_info en cada función
                 query = query.replace(", )", ")")
                 print(f"Insertando datos en {dataset}...")
                 try:
@@ -53,6 +57,9 @@ def insertion(datasets):
                     print(data)
                 con.commit()
             def mapper(record):
+                '''
+                La función que se encarga de 'humanizar' todos los registros 
+                '''
                 if not record:
                     return
                 to_extract = {}
