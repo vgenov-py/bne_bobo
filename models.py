@@ -14,6 +14,7 @@ query_create_geo ='''
         t_510,
         t_550,
         t_551,
+        t_610,
         t_667,
         t_670,
         t_781,
@@ -26,6 +27,7 @@ query_create_geo ='''
         materia_relacionada,
         lugar_relacionado,
         nota_general,
+        nuevo_campo,
         fuentes_de_informacion,
         lugar_jerarquico,
         obras_relacionadas_en_el_catalogo_BNE

@@ -33,6 +33,7 @@ def extract_values(dataset:str ,record:dict) -> tuple:
         result.append(record.get("510"))
         result.append(record.get("550"))
         result.append(record.get("551"))
+        result.append(record.get("610"))
         result.append(record.get("667"))
         result.append(record.get("670"))
         result.append(record.get("781"))
@@ -54,6 +55,7 @@ def extract_values(dataset:str ,record:dict) -> tuple:
         humans.append(related_place(record.get("551"))  if record.get("551") else None)
         #nota general
         humans.append(dollar_parser(record.get("667"))  if record.get("667") else None)
+        humans.append(geo_entity(record.get("610")))
         #fuentes de información
         humans.append(sources(record.get("670"))  if record.get("670") else None)
         #lugar jerárquico
@@ -2325,6 +2327,19 @@ def son_interpetation_media(value: str) -> str:
                 result += f"({pre})"
             elif pre:
                 result += pre
+    return result
+
+@stripper
+def geo_entity(value_610:str) -> str:
+    '''
+    610: $a($b)
+    '''
+    if not value_610:
+        return
+    result = get_single_dollar(value_610, "a")
+    d_b = get_single_dollar(value_610, "b")
+    if d_b:
+        result += f"({d_b})"
     return result
 
 

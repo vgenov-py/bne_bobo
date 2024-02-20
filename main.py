@@ -21,7 +21,7 @@ def get_files(urls):
     with concurrent.futures.ThreadPoolExecutor() as executor:
         def a(url):
             print(f"Accediendo a {url.split('/')[-1]}")
-            res = req.get(url)
+            res = req.get(url, verify=False)
             z_file_name = re.findall("\w{1,}\.zip", res.url)[0]
             z_file = open(f"zips/{z_file_name}", "wb")
             print(f"Escribiendo {z_file_name}")
